@@ -1,1 +1,1236 @@
-index.html [generated with web_code_canvas tool]
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Centro Educa Mais Professor Dimas Simas Lima</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#e3f2fd',
+                            100: '#bbdefb',
+                            500: '#2196f3',
+                            600: '#1e88e5',
+                            700: '#1976d2',
+                            800: '#1565c0',
+                            900: '#0d47a1',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #e3f2fd;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1976d2;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col antialiased">
+
+    <!-- APP HEADER (SÓ EXIBIDO QUANDO AUTENTICADO) -->
+    <header id="appHeader" class="hidden bg-brand-900 text-white shadow-lg sticky top-0 z-40 border-b border-brand-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Identificação do Portal -->
+                <div class="flex items-center gap-3">
+                    <div class="bg-white p-2 rounded-xl text-brand-900 shadow">
+                        <i data-lucide="graduation-cap" class="w-7 h-7"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-extrabold text-base sm:text-lg tracking-tight leading-tight">
+                            Centro Educa Mais
+                        </h1>
+                        <p class="text-xs text-brand-100 font-medium">Prof. Dimas Simas Lima</p>
+                    </div>
+                </div>
+
+                <!-- Perfil Ativo & Ações -->
+                <div class="flex items-center gap-3">
+                    <button onclick="toggleEmbedModal()" class="hidden sm:flex items-center gap-2 bg-brand-800 hover:bg-brand-700 text-white text-xs px-3 py-2 rounded-lg border border-brand-600/50 transition shadow-sm font-medium">
+                        <i data-lucide="code" class="w-4 h-4"></i>
+                        <span>Incorporar no Google Sites</span>
+                    </button>
+                    
+                    <!-- Card do Usuário Logado -->
+                    <div class="flex items-center bg-brand-800/90 rounded-xl p-1.5 pl-3 border border-brand-700/60 shadow-inner">
+                        <div class="text-right mr-3 hidden sm:block">
+                            <p id="headerUserName" class="text-xs font-bold leading-tight text-white">Nome Usuário</p>
+                            <span id="headerUserBadge" class="inline-block text-[10px] px-2 py-0.5 rounded-full font-bold bg-brand-700 text-brand-50 mt-0.5">
+                                Perfil
+                            </span>
+                        </div>
+                        <div id="headerUserAvatar" class="w-9 h-9 rounded-lg bg-brand-600 flex items-center justify-center font-bold text-sm text-white shadow border border-brand-500">
+                            U
+                        </div>
+                        <button onclick="handleLogout()" class="ml-3 bg-red-600 hover:bg-red-700 text-white text-xs p-2 rounded-lg transition shadow flex items-center gap-1" title="Sair do Portal">
+                            <i data-lucide="log-out" class="w-4 h-4"></i>
+                            <span class="hidden md:inline font-semibold">Sair</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTAINER PRINCIPAL DE VISÕES DEDICADAS -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- Toast Notification Global -->
+        <div id="toastNotification" class="hidden mb-6 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 flex items-center justify-between shadow-md transition-all duration-300">
+            <div class="flex items-center gap-3">
+                <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-600"></i>
+                <span id="toastMessage" class="text-xs sm:text-sm font-medium">Operação realizada com sucesso!</span>
+            </div>
+            <button onclick="hideToast()" class="text-emerald-600 hover:text-emerald-800">
+                <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+        </div>
+
+        <!-- 0. TELA DE LOGIN UNIFICADA -->
+        <div id="route-login" class="route-view min-h-[80vh] flex items-center justify-center py-6">
+            <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden border border-brand-100">
+                <div class="bg-gradient-to-br from-brand-900 via-brand-800 to-brand-700 p-8 text-white text-center relative">
+                    <div class="w-20 h-20 bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-white/20 shadow-inner backdrop-blur-sm">
+                        <i data-lucide="graduation-cap" class="w-12 h-12 text-white"></i>
+                    </div>
+                    <h2 class="text-2xl font-black tracking-tight">Centro Educa Mais</h2>
+                    <p class="text-xs text-brand-100 mt-1 font-medium">Prof. Dimas Simas Lima</p>
+                    <span class="inline-block mt-3 bg-white/15 text-white text-[11px] px-3 py-1 rounded-full font-semibold border border-white/20">
+                        Portal Escolar Integrado
+                    </span>
+                </div>
+                <div class="p-8">
+                    <form onsubmit="handleLogin(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">E-mail ou Matrícula</label>
+                            <div class="relative">
+                                <i data-lucide="user" class="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5"></i>
+                                <input type="text" id="loginIdentifier" required placeholder="Digite seu e-mail ou matrícula" class="w-full text-xs pl-10 pr-3 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Senha de Acesso</label>
+                            <div class="relative">
+                                <i data-lucide="lock" class="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5"></i>
+                                <input type="password" id="loginPassword" required placeholder="••••••••" class="w-full text-xs pl-10 pr-3 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="w-full bg-brand-700 hover:bg-brand-800 text-white font-bold text-xs py-3.5 rounded-xl transition shadow-lg flex items-center justify-center gap-2">
+                            <i data-lucide="log-in" class="w-4 h-4"></i> Entrar na Minha Conta
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- 1. PAINEL EXCLUSIVO - GESTÃO ESCOLAR -->
+        <div id="route-gestao" class="route-view hidden space-y-6">
+            <!-- Banner Institucional -->
+            <div class="bg-gradient-to-r from-brand-900 via-brand-800 to-brand-700 rounded-2xl p-6 text-white shadow-md relative overflow-hidden">
+                <div class="relative z-10">
+                    <span class="bg-white/20 text-white text-[10px] px-3 py-1 rounded-full font-bold uppercase tracking-wider">Painel Administrativo Geral</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold mt-2">Gestão Escolar e Indicadores</h2>
+                    <p class="text-xs sm:text-sm text-brand-100 mt-1">Controle de usuários, emissão de comunicados institucionais e relatórios globais.</p>
+                </div>
+            </div>
+
+            <!-- Stats Rápidos -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4">
+                    <div class="p-3 bg-brand-50 text-brand-700 rounded-xl">
+                        <i data-lucide="users" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-medium text-slate-500">Total de Estudantes</p>
+                        <h3 id="statTotalAlunos" class="text-2xl font-bold text-slate-800">0</h3>
+                        <span class="text-[10px] text-emerald-600 font-semibold">Ativos no Sistema</span>
+                    </div>
+                </div>
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4">
+                    <div class="p-3 bg-brand-50 text-brand-700 rounded-xl">
+                        <i data-lucide="award" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-medium text-slate-500">Corpo Docente</p>
+                        <h3 id="statTotalProfessores" class="text-2xl font-bold text-slate-800">0</h3>
+                        <span class="text-[10px] text-brand-700 font-semibold">Professores Cadastrados</span>
+                    </div>
+                </div>
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4">
+                    <div class="p-3 bg-brand-50 text-brand-700 rounded-xl">
+                        <i data-lucide="user-check" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-medium text-slate-500">Responsáveis</p>
+                        <h3 id="statTotalResponsaveis" class="text-2xl font-bold text-slate-800">0</h3>
+                        <span class="text-[10px] text-emerald-600 font-semibold">Famílias Conectadas</span>
+                    </div>
+                </div>
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4">
+                    <div class="p-3 bg-brand-50 text-brand-700 rounded-xl">
+                        <i data-lucide="megaphone" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-medium text-slate-500">Comunicados Gerais</p>
+                        <h3 id="gestaoCountAvisos" class="text-2xl font-bold text-slate-800">0</h3>
+                        <span class="text-[10px] text-slate-400 font-semibold">Publicados no Portal</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gerenciador Completo de Usuários -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Cadastro de Usuários -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm lg:col-span-1">
+                    <h3 class="font-bold text-slate-800 text-base mb-4 flex items-center gap-2">
+                        <i data-lucide="user-plus" class="w-5 h-5 text-brand-700"></i>
+                        Cadastrar Novo Usuário
+                    </h3>
+                    <form onsubmit="handleCreateUser(event)" class="space-y-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Nome Completo</label>
+                            <input type="text" id="newUserName" required placeholder="Ex: Maria Eduarda Silva" class="w-full text-xs p-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">E-mail / Matrícula (Login)</label>
+                            <input type="email" id="newUserIdentifier" required placeholder="Ex: maria.silva@dimassimas.edu.br" class="w-full text-xs p-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Perfil</label>
+                                <select id="newUserRole" onchange="toggleExtraFields()" class="w-full text-xs p-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium">
+                                    <option value="estudantes">Estudante</option>
+                                    <option value="professores">Professor</option>
+                                    <option value="responsaveis">Responsável</option>
+                                    <option value="gestao">Gestão / Admin</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Senha Inicial</label>
+                                <input type="text" id="newUserPassword" required value="senha123" class="w-full text-xs p-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-500 font-mono">
+                            </div>
+                        </div>
+
+                        <!-- Vínculos Condicionais -->
+                        <div id="fieldTeacherSubject" class="hidden">
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Disciplina / Matéria</label>
+                            <input type="text" id="newUserSubject" placeholder="Ex: Matemática, Física, Português" class="w-full text-xs p-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                        </div>
+
+                        <div id="fieldStudentClass">
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Turma e Ano</label>
+                            <input type="text" id="newUserClass" placeholder="Ex: 3º Ano A - Matutino" class="w-full text-xs p-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                        </div>
+
+                        <div id="fieldParentLink" class="hidden">
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Vincular ao Estudante (Selecione)</label>
+                            <select id="newUserLinkedStudent" class="w-full text-xs p-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                                <!-- Preenchido dinamicamente com os alunos cadastrados -->
+                            </select>
+                        </div>
+
+                        <button type="submit" class="w-full bg-brand-700 hover:bg-brand-800 text-white font-bold text-xs py-3 rounded-lg transition flex items-center justify-center gap-2 shadow mt-3">
+                            <i data-lucide="user-check" class="w-4 h-4"></i> Salvar e Criar Conta
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Tabela de Usuários Registrados -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm lg:col-span-2">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4">
+                        <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
+                            <i data-lucide="users" class="w-5 h-5 text-brand-700"></i>
+                            Usuários Cadastrados no Portal
+                        </h3>
+                        <div class="flex items-center gap-2 w-full sm:w-auto">
+                            <select id="userFilterRole" onchange="renderUsersList()" class="text-xs p-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                                <option value="todos font-medium">Todos os Perfis</option>
+                                <option value="estudantes">Estudantes</option>
+                                <option value="professores">Professores</option>
+                                <option value="responsaveis">Responsáveis</option>
+                                <option value="gestao">Gestão</option>
+                            </select>
+                            <input type="text" id="userSearchInput" oninput="renderUsersList()" placeholder="Buscar nome..." class="text-xs p-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-500 flex-1">
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse text-xs">
+                            <thead>
+                                <tr class="bg-slate-50 border-b border-slate-200 text-slate-600">
+                                    <th class="p-3 font-semibold">Nome</th>
+                                    <th class="p-3 font-semibold">E-mail / Login</th>
+                                    <th class="p-3 font-semibold">Perfil</th>
+                                    <th class="p-3 font-semibold">Vínculo / Detalhes</th>
+                                    <th class="p-3 font-semibold text-center">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody" class="divide-y divide-slate-100">
+                                <!-- JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Publicação de Comunicados Gerais da Direção -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm lg:col-span-1">
+                    <h3 class="font-bold text-slate-800 text-base mb-4 flex items-center gap-2">
+                        <i data-lucide="megaphone" class="w-5 h-5 text-brand-700"></i>
+                        Novo Aviso da Gestão
+                    </h3>
+                    <form onsubmit="saveNotice(event)" class="space-y-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Título do Comunicado</label>
+                            <input type="text" id="noticeTitle" required placeholder="Ex: Reunião de Pais e Mestres" class="w-full text-xs p-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Público Destino</label>
+                            <select id="noticeAudience" class="w-full text-xs p-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium">
+                                <option value="todos">Toda a Comunidade Escolar</option>
+                                <option value="professores">Somente Professores</option>
+                                <option value="estudantes">Somente Estudantes</option>
+                                <option value="responsaveis">Somente Responsáveis</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Mensagem</label>
+                            <textarea id="noticeBody" required rows="4" placeholder="Escreva o comunicado oficial aqui..." class="w-full text-xs p-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-500"></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-brand-700 hover:bg-brand-800 text-white font-bold text-xs py-2.5 rounded-lg transition flex items-center justify-center gap-2 shadow">
+                            <i data-lucide="send" class="w-4 h-4"></i> Publicar Comunicado
+                        </button>
+                    </form>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm lg:col-span-2">
+                    <h3 class="font-bold text-slate-800 text-base mb-4 flex items-center gap-2">
+                        <i data-lucide="list" class="w-5 h-5 text-brand-700"></i>
+                        Mural de Avisos Institucionais
+                    </h3>
+                    <div id="gestaoNoticesList" class="space-y-3 max-h-[360px] overflow-y-auto pr-1">
+                        <!-- JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. PAINEL EXCLUSIVO - PROFESSOR -->
+        <div id="route-professores" class="route-view hidden space-y-6">
+            <div class="bg-gradient-to-r from-brand-900 via-brand-800 to-brand-700 rounded-2xl p-6 text-white shadow-md">
+                <span class="bg-white/20 text-white text-[10px] px-3 py-1 rounded-full font-bold uppercase tracking-wider">Espaço Docente</span>
+                <h2 class="text-2xl sm:text-3xl font-extrabold mt-2">Diário de Classe & Gestão de Turmas</h2>
+                <p class="text-xs sm:text-sm text-brand-100 mt-1">Lançamento de notas, registro de frequência em tempo real e comunicação com a comunidade.</p>
+            </div>
+
+            <!-- Diário de Classe - Lançamento de Notas -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm lg:col-span-2">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+                        <div>
+                            <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
+                                <i data-lucide="file-spreadsheet" class="w-5 h-5 text-brand-700"></i>
+                                Lançamento de Notas por Disciplina
+                            </h3>
+                            <p class="text-xs text-slate-500">Insira as avaliações N1 e N2 para cálculo automático de média.</p>
+                        </div>
+                        <span class="bg-brand-50 text-brand-800 border border-brand-200 text-xs px-3 py-1 rounded-full font-bold">Turma: 3º Ano A - Matutino</span>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50 border-b border-slate-200 text-slate-600 text-xs">
+                                    <th class="p-3 font-semibold">Estudante</th>
+                                    <th class="p-3 font-semibold w-24">N1 (10.0)</th>
+                                    <th class="p-3 font-semibold w-24">N2 (10.0)</th>
+                                    <th class="p-3 font-semibold w-24">Média</th>
+                                    <th class="p-3 font-semibold text-center">Situação</th>
+                                </tr>
+                            </thead>
+                            <tbody id="gradesTableBody" class="divide-y divide-slate-100 text-xs">
+                                <!-- JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Chamada / Frequência Rápida -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm lg:col-span-1">
+                    <h3 class="font-bold text-slate-800 text-base mb-2 flex items-center gap-2">
+                        <i data-lucide="check-square" class="w-5 h-5 text-brand-700"></i>
+                        Frequência Diária
+                    </h3>
+                    <p class="text-xs text-slate-500 mb-4">Marque os alunos presentes na aula de hoje.</p>
+                    <form onsubmit="saveAttendance(event)" class="space-y-3">
+                        <div id="attendanceList" class="space-y-2 max-h-[280px] overflow-y-auto pr-1">
+                            <!-- JS -->
+                        </div>
+                        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs py-3 rounded-lg transition flex items-center justify-center gap-2 shadow">
+                            <i data-lucide="save" class="w-4 h-4"></i> Salvar Chamada do Dia
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Avisos Globais Visíveis para o Professor -->
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                <h3 class="font-bold text-slate-800 text-base mb-3 flex items-center gap-2">
+                    <i data-lucide="bell" class="w-5 h-5 text-brand-700"></i>
+                    Avisos e Diretrizez da Direção
+                </h3>
+                <div id="teacherNoticesList" class="space-y-3">
+                    <!-- JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. PAINEL EXCLUSIVO - ESTUDANTE -->
+        <div id="route-estudantes" class="route-view hidden space-y-6">
+            <div class="bg-gradient-to-r from-brand-900 via-brand-800 to-brand-700 rounded-2xl p-6 text-white shadow-md">
+                <span class="bg-white/20 text-white text-[10px] px-3 py-1 rounded-full font-bold uppercase tracking-wider">Portal do Aluno</span>
+                <h2 id="studentWelcomeHeading" class="text-2xl sm:text-3xl font-extrabold mt-2">Meu Boletim e Atividades</h2>
+                <p class="text-xs sm:text-sm text-brand-100 mt-1">Acompanhe suas notas, média global, frequência e compromissos escolares.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Cartão de Desempenho e Boletim -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm lg:col-span-2">
+                    <h3 class="font-bold text-slate-800 text-base mb-4 flex items-center gap-2">
+                        <i data-lucide="award" class="w-5 h-5 text-brand-700"></i>
+                        Boletim Escolar - Ano Letivo 2026
+                    </h3>
+                    
+                    <!-- Resumo Rápido -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+                        <div class="bg-brand-50 p-4 rounded-xl border border-brand-100 text-center">
+                            <span class="text-xs text-brand-800 font-bold">Média Geral</span>
+                            <p id="studentAverage" class="text-3xl font-black text-brand-900 mt-1">8.8</p>
+                        </div>
+                        <div class="bg-emerald-50 p-4 rounded-xl border border-emerald-100 text-center">
+                            <span class="text-xs text-emerald-800 font-bold">Frequência Global</span>
+                            <p class="text-3xl font-black text-emerald-700 mt-1">95%</p>
+                        </div>
+                        <div class="bg-blue-50 p-4 rounded-xl border border-blue-100 text-center">
+                            <span class="text-xs text-blue-800 font-bold">Situação Atual</span>
+                            <p class="text-lg font-extrabold text-blue-900 mt-2">Aprovado Direto</p>
+                        </div>
+                    </div>
+
+                    <h4 class="font-bold text-xs text-slate-600 uppercase tracking-wider mb-3">Disciplinas e Avaliações</h4>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse text-xs">
+                            <thead>
+                                <tr class="bg-slate-50 text-slate-600 border-b">
+                                    <th class="p-3 font-semibold">Disciplina</th>
+                                    <th class="p-3 font-semibold">Avaliação N1</th>
+                                    <th class="p-3 font-semibold">Avaliação N2</th>
+                                    <th class="p-3 font-semibold">Média Parcial</th>
+                                    <th class="p-3 font-semibold">Situação</th>
+                                </tr>
+                            </thead>
+                            <tbody id="studentReportCard" class="divide-y divide-slate-100">
+                                <!-- JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Quadro de Horários & Comunicados do Aluno -->
+                <div class="space-y-6 lg:col-span-1">
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                        <h3 class="font-bold text-slate-800 text-base mb-4 flex items-center gap-2">
+                            <i data-lucide="clock" class="w-5 h-5 text-brand-700"></i>
+                            Horário das Aulas
+                        </h3>
+                        <div class="space-y-3 text-xs">
+                            <div class="p-3 bg-slate-50 rounded-xl border-l-4 border-brand-700 flex justify-between items-center">
+                                <div>
+                                    <p class="font-bold text-slate-800">Matemática / Física</p>
+                                    <p class="text-slate-500 text-[11px]">Prof. Carlos Silva</p>
+                                </div>
+                                <span class="bg-white px-2 py-1 rounded border text-slate-600 font-mono text-[10px]">07:30 - 09:10</span>
+                            </div>
+                            <div class="p-3 bg-slate-50 rounded-xl border-l-4 border-brand-700 flex justify-between items-center">
+                                <div>
+                                    <p class="font-bold text-slate-800">Língua Portuguesa</p>
+                                    <p class="text-slate-500 text-[11px]">Profa. Maria Oliveira</p>
+                                </div>
+                                <span class="bg-white px-2 py-1 rounded border text-slate-600 font-mono text-[10px]">09:20 - 11:00</span>
+                            </div>
+                            <div class="p-3 bg-slate-50 rounded-xl border-l-4 border-brand-700 flex justify-between items-center">
+                                <div>
+                                    <p class="font-bold text-slate-800">Química / Biologia</p>
+                                    <p class="text-slate-500 text-[11px]">Prof. Dimas Simas</p>
+                                </div>
+                                <span class="bg-white px-2 py-1 rounded border text-slate-600 font-mono text-[10px]">11:10 - 12:00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                        <h3 class="font-bold text-slate-800 text-base mb-3 flex items-center gap-2">
+                            <i data-lucide="bell" class="w-5 h-5 text-brand-700"></i>
+                            Mural de Avisos da Turma
+                        </h3>
+                        <div id="studentNoticesList" class="space-y-3">
+                            <!-- JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. PAINEL EXCLUSIVO - RESPONSÁVEL -->
+        <div id="route-responsaveis" class="route-view hidden space-y-6">
+            <div class="bg-gradient-to-r from-brand-900 via-brand-800 to-brand-700 rounded-2xl p-6 text-white shadow-md">
+                <span class="bg-white/20 text-white text-[10px] px-3 py-1 rounded-full font-bold uppercase tracking-wider">Portal da Família</span>
+                <h2 class="text-2xl sm:text-3xl font-extrabold mt-2">Acompanhamento do Estudante</h2>
+                <p class="text-xs sm:text-sm text-brand-100 mt-1">Supervisão acadêmica, boletim, presença escolar e canal de mensagem com a equipe pedagógica.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm lg:col-span-2">
+                    <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-3">
+                        <div>
+                            <h3 class="font-bold text-slate-800 text-base">Ficha Acadêmica do Filho(a)</h3>
+                            <p id="parentStudentLinkedName" class="text-xs text-brand-700 font-bold mt-0.5">Estudante Vinculado: Lucas Andrade (3º Ano A)</p>
+                        </div>
+                        <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full">Matrícula Ativa</span>
+                    </div>
+
+                    <!-- Indicadores do Filho -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                        <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-bold text-slate-600">Frequência Escolar</span>
+                                <i data-lucide="check-circle" class="w-4 h-4 text-emerald-600"></i>
+                            </div>
+                            <p class="text-2xl font-black text-slate-800 mt-2">95.0%</p>
+                            <p class="text-[11px] text-emerald-600 font-semibold mt-1">Dentro do limite mínimo recomendado</p>
+                        </div>
+                        <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-bold text-slate-600">Ocorrências Disciplinares</span>
+                                <i data-lucide="shield-check" class="w-4 h-4 text-brand-700"></i>
+                            </div>
+                            <p class="text-2xl font-black text-slate-800 mt-2">Nenhuma</p>
+                            <p class="text-[11px] text-emerald-600 font-semibold mt-1">Excelente conduta no ambiente escolar</p>
+                        </div>
+                    </div>
+
+                    <!-- Boletim Simplificado do Aluno -->
+                    <h4 class="font-bold text-xs text-slate-600 uppercase tracking-wider mb-3">Notas Atualizadas do Estudante</h4>
+                    <div class="overflow-x-auto mb-6">
+                        <table class="w-full text-left border-collapse text-xs">
+                            <thead>
+                                <tr class="bg-slate-50 text-slate-600">
+                                    <th class="p-3 font-semibold">Disciplina</th>
+                                    <th class="p-3 font-semibold">N1</th>
+                                    <th class="p-3 font-semibold">N2</th>
+                                    <th class="p-3 font-semibold">Média</th>
+                                    <th class="p-3 font-semibold">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="parentReportCard" class="divide-y divide-slate-100">
+                                <!-- JS -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Comunicados Institucionais -->
+                    <h4 class="font-bold text-xs text-slate-600 uppercase tracking-wider mb-3">Avisos e Recados da Coordenação</h4>
+                    <div id="parentNoticesList" class="space-y-3">
+                        <!-- JS -->
+                    </div>
+                </div>
+
+                <!-- Formulário de Contato Direto -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm lg:col-span-1">
+                    <h3 class="font-bold text-slate-800 text-base mb-4 flex items-center gap-2">
+                        <i data-lucide="message-square" class="w-5 h-5 text-brand-700"></i>
+                        Contato com a Escola
+                    </h3>
+                    <form onsubmit="sendMessageToSchool(event)" class="space-y-3 text-xs">
+                        <div>
+                            <label class="block font-semibold text-slate-600 mb-1">Assunto</label>
+                            <select id="messageSubject" class="w-full p-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium">
+                                <option>Justificativa de Falta</option>
+                                <option>Dúvida sobre Avaliações</option>
+                                <option>Agendamento com a Gestão</option>
+                                <option>Outras Informações</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block font-semibold text-slate-600 mb-1">Mensagem</label>
+                            <textarea id="messageText" required rows="5" placeholder="Escreva aqui a sua mensagem para a coordenação pedagógica..." class="w-full p-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-500"></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-brand-700 hover:bg-brand-800 text-white font-bold py-3 rounded-lg transition flex items-center justify-center gap-2 shadow">
+                            <i data-lucide="send" class="w-4 h-4"></i> Enviar para a Direção
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- FOOTER GERAL -->
+    <footer class="bg-brand-900 text-white mt-auto border-t border-brand-800 py-6">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-xs text-center sm:flex sm:justify-between sm:items-center">
+            <div>
+                <p class="font-bold">Centro Educa Mais Professor Dimas Simas Lima</p>
+                <p class="text-brand-100 mt-0.5">Ensino Médio em Tempo Integral - Educação de Excelência</p>
+            </div>
+            <div class="mt-3 sm:mt-0 text-brand-100">
+                <p>© 2026 Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- MODAL DE INSTRUCÕES GOOGLE SITES -->
+    <div id="embedModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl relative border border-brand-100">
+            <button onclick="toggleEmbedModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <div class="flex items-center gap-3 mb-4 text-brand-900">
+                <i data-lucide="code" class="w-6 h-6"></i>
+                <h3 class="font-bold text-lg">Incorporar no Google Sites</h3>
+            </div>
+            <p class="text-xs text-slate-600 mb-3">
+                Siga as etapas abaixo para exibir este portal perfeitamente dentro do seu Google Sites:
+            </p>
+            <ol class="list-decimal list-inside text-xs text-slate-700 space-y-2 mb-4 bg-slate-50 p-3 rounded-xl border">
+                <li>Abra o seu painel de edição no <b>Google Sites</b>.</li>
+                <li>Clique no menu <b>Incorporar (Embed)</b>.</li>
+                <li>Escolha a aba <b>Código HTML (&lt;/&gt;)</b>.</li>
+                <li>Copie o código iFrame abaixo e cole na caixa.</li>
+            </ol>
+            <div class="relative">
+                <textarea id="embedCodeText" readonly rows="3" class="w-full text-[11px] font-mono bg-slate-900 text-slate-200 p-3 rounded-xl border focus:outline-none"></textarea>
+                <button onclick="copyEmbedCode()" class="absolute top-2 right-2 bg-brand-700 hover:bg-brand-800 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg transition">
+                    Copiar
+                </button>
+            </div>
+            <div class="mt-5 text-right">
+                <button onclick="toggleEmbedModal()" class="bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs px-4 py-2 rounded-lg font-bold">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPT DE ARQUITETURA, ROTAS E REGRA DE NEGÓCIOS -->
+    <script>
+        // DADOS PRÉ-CARREGADOS PADRÃO PARA TESTES
+        const SEED_USERS = [
+            { id: 'u_admin', name: 'Diretoria Escolar', email: 'admin@dimassimas.edu.br', password: 'senha123', role: 'gestao', details: 'Administração Geral' },
+            { id: 'u_prof', name: 'Prof. Carlos Silva', email: 'prof.carlos@dimassimas.edu.br', password: 'senha123', role: 'professores', details: 'Matemática e Física' },
+            { id: 'u_aluno', name: 'Lucas Andrade', email: 'aluno.lucas@dimassimas.edu.br', password: 'senha123', role: 'estudantes', details: '3º Ano A - Matutino' },
+            { id: 'u_resp', name: 'Maria Andrade', email: 'resp.maria@dimassimas.edu.br', password: 'senha123', role: 'responsaveis', details: 'Resp. por Lucas Andrade', linkedStudentId: 'u_aluno' }
+        ];
+
+        const DEFAULT_DATA = {
+            users: SEED_USERS,
+            notices: [
+                { id: 1, title: "Reunião de Pais e Mestres do 3º Bimestre", audience: "todos", body: "Convidamos todos os responsáveis para a nossa reunião geral nesta sexta-feira às 18h no auditório principal.", date: "20/10/2026" },
+                { id: 2, title: "Prazo da Feira de Ciências e Tecnologia", audience: "estudantes", body: "Lembramos aos alunos que o relatório de projeto de Iniciação Científica deve ser entregue até o dia 25/10.", date: "18/10/2026" },
+                { id: 3, title: "Conselho de Classe Intermediário", audience: "professores", body: "Reunião pedagógica de alinhamento marcada para quinta-feira no final do turno.", date: "15/10/2026" }
+            ],
+            grades: [
+                { id: 'g1', studentId: 'u_aluno', name: "Lucas Andrade", subject: "Matemática", n1: 9.5, n2: 9.0 },
+                { id: 'g2', studentId: 'u_aluno', name: "Lucas Andrade", subject: "Língua Portuguesa", n1: 8.5, n2: 8.0 },
+                { id: 'g3', studentId: 'u_aluno', name: "Lucas Andrade", subject: "Física", n1: 9.0, n2: 8.5 },
+                { id: 'g4', studentId: 'u_aluno', name: "Lucas Andrade", subject: "Química", n1: 8.0, n2: 9.0 }
+            ],
+            attendance: [
+                { id: 'a1', studentId: 'u_aluno', name: "Lucas Andrade", present: true },
+                { id: 'a2', name: "Ana Beatriz Souza", present: true },
+                { id: 'a3', name: "Carlos Eduardo Santos", present: false },
+                { id: 'a4', name: "Mariana Costa", present: true }
+            ]
+        };
+
+        // ESTADO GLOBAL DA APLICAÇÃO
+        let appData = JSON.parse(localStorage.getItem('ce_dimas_portal_db')) || DEFAULT_DATA;
+        let currentUser = null;
+
+        // GARANTIR QUE O USUÁRIO GESTÃO PADRÃO EXISTA NO BANCO LOCAL
+        (function ensureAdminAccount() {
+            const adminExists = appData.users && appData.users.some(u => u.email.toLowerCase() === 'admin@dimassimas.edu.br');
+            if (!adminExists) {
+                if (!appData.users) appData.users = [];
+                appData.users.unshift(SEED_USERS[0]);
+                localStorage.setItem('ce_dimas_portal_db', JSON.stringify(appData));
+            }
+        })();
+
+        function saveData() {
+            localStorage.setItem('ce_dimas_portal_db', JSON.stringify(appData));
+        }
+
+        // SISTEMA DE ROTAS E NAVEGAÇÃO ISOLADA POR PERFIL
+        function navigateTo(routeId) {
+            // Esconde todas as visões
+            document.querySelectorAll('.route-view').forEach(view => view.classList.add('hidden'));
+
+            const header = document.getElementById('appHeader');
+
+            if (routeId === 'login' || !currentUser) {
+                header.classList.add('hidden');
+                document.getElementById('route-login').classList.remove('hidden');
+            } else {
+                header.classList.remove('hidden');
+                
+                // Atualizar dados do Header
+                document.getElementById('headerUserName').innerText = currentUser.name;
+                
+                const roleLabels = {
+                    gestao: 'Gestão Escolar',
+                    professores: 'Professor(a)',
+                    estudantes: 'Estudante',
+                    responsaveis: 'Responsável'
+                };
+                
+                const roleAvatars = {
+                    gestao: 'G',
+                    professores: 'P',
+                    estudantes: 'E',
+                    responsaveis: 'R'
+                };
+
+                document.getElementById('headerUserBadge').innerText = roleLabels[currentUser.role] || 'Usuário';
+                document.getElementById('headerUserAvatar').innerText = roleAvatars[currentUser.role] || 'U';
+
+                // Exibe a rota única correspondente ao perfil
+                const targetRoute = document.getElementById(`route-${currentUser.role}`);
+                if (targetRoute) {
+                    targetRoute.classList.remove('hidden');
+                } else {
+                    document.getElementById('route-login').classList.remove('hidden');
+                }
+
+                // Renderizar visões do usuário logado
+                renderCurrentRoleView();
+            }
+
+            lucide.createIcons();
+        }
+
+        // LÓGICA DE AUTENTICAÇÃO
+        function handleLogin(e) {
+            e.preventDefault();
+            const identifier = document.getElementById('loginIdentifier').value.trim().toLowerCase();
+            const password = document.getElementById('loginPassword').value.trim();
+
+            const user = appData.users.find(u => 
+                (u.email.toLowerCase() === identifier || u.id.toLowerCase() === identifier) && 
+                u.password === password
+            );
+
+            if (user) {
+                currentUser = user;
+                showToast(`Bem-vindo(a), ${currentUser.name}!`);
+                navigateTo(currentUser.role);
+            } else {
+                showToast("Credenciais inválidas! Tente novamente.");
+            }
+        }
+
+        function quickFill(email, pass) {
+            document.getElementById('loginIdentifier').value = email;
+            document.getElementById('loginPassword').value = pass;
+        }
+
+        function handleLogout() {
+            currentUser = null;
+            document.getElementById('loginIdentifier').value = '';
+            document.getElementById('loginPassword').value = '';
+            navigateTo('login');
+            showToast("Você saiu do portal com segurança.");
+        }
+
+        // MÓDULO DE GESTÃO DE USUÁRIOS (ROTA GESTÃO)
+        function toggleExtraFields() {
+            const role = document.getElementById('newUserRole').value;
+            const teacherField = document.getElementById('fieldTeacherSubject');
+            const studentField = document.getElementById('fieldStudentClass');
+            const parentField = document.getElementById('fieldParentLink');
+
+            teacherField.classList.add('hidden');
+            studentField.classList.add('hidden');
+            parentField.classList.add('hidden');
+
+            if (role === 'professores') {
+                teacherField.classList.remove('hidden');
+            } else if (role === 'estudantes') {
+                studentField.classList.remove('hidden');
+            } else if (role === 'responsaveis') {
+                parentField.classList.remove('hidden');
+                populateStudentSelectOptions();
+            }
+        }
+
+        function populateStudentSelectOptions() {
+            const select = document.getElementById('newUserLinkedStudent');
+            const students = appData.users.filter(u => u.role === 'estudantes');
+            let html = '';
+
+            if (students.length === 0) {
+                html = `<option value="">Nenhum estudante cadastrado ainda</option>`;
+            } else {
+                students.forEach(st => {
+                    html += `<option value="${st.id}">${st.name} (${st.details || 'Estudante'})</option>`;
+                });
+            }
+            select.innerHTML = html;
+        }
+
+        function handleCreateUser(e) {
+            e.preventDefault();
+            const name = document.getElementById('newUserName').value.trim();
+            const email = document.getElementById('newUserIdentifier').value.trim();
+            const role = document.getElementById('newUserRole').value;
+            const password = document.getElementById('newUserPassword').value.trim();
+
+            if (appData.users.some(u => u.email.toLowerCase() === email.toLowerCase())) {
+                showToast("Atenção: Já existe um usuário cadastrado com este e-mail!");
+                return;
+            }
+
+            let details = 'Geral';
+            let linkedStudentId = null;
+
+            if (role === 'professores') {
+                details = document.getElementById('newUserSubject').value || 'Docente';
+            } else if (role === 'estudantes') {
+                details = document.getElementById('newUserClass').value || '3º Ano A';
+            } else if (role === 'responsaveis') {
+                linkedStudentId = document.getElementById('newUserLinkedStudent').value;
+                const student = appData.users.find(u => u.id === linkedStudentId);
+                details = student ? `Resp. por ${student.name}` : 'Responsável Legal';
+            }
+
+            const newUserId = 'u_' + Date.now();
+            const newUser = {
+                id: newUserId,
+                name,
+                email,
+                role,
+                password,
+                details,
+                linkedStudentId
+            };
+
+            appData.users.push(newUser);
+
+            // Se for estudante, adiciona registro de notas padrão para ele
+            if (role === 'estudantes') {
+                const subjects = ["Matemática", "Língua Portuguesa", "Física", "Química"];
+                subjects.forEach(sub => {
+                    appData.grades.push({
+                        id: 'g_' + Math.random().toString(36).substr(2, 9),
+                        studentId: newUserId,
+                        name: name,
+                        subject: sub,
+                        n1: 8.0,
+                        n2: 8.5
+                    });
+                });
+                appData.attendance.push({
+                    id: 'a_' + Date.now(),
+                    studentId: newUserId,
+                    name: name,
+                    present: true
+                });
+            }
+
+            saveData();
+            renderUsersList();
+            e.target.reset();
+            showToast(`Usuário ${name} criado com sucesso! Credenciais prontas para uso.`);
+        }
+
+        // FUNÇÃO DE EXCLUSÃO DE USUÁRIO ATUALIZADA E CORRIGIDA
+        function deleteUser(userId) {
+            // Regra de segurança: impede auto-exclusão do gestor ativo
+            if (currentUser && currentUser.id === userId) {
+                showToast("Não é possível excluir a conta que está atualmente em uso!");
+                return;
+            }
+
+            const targetUser = appData.users.find(u => u.id === userId);
+            const userName = targetUser ? targetUser.name : "este usuário";
+
+            if (confirm(`Tem certeza que deseja excluir permanentemente o usuário "${userName}" do portal?`)) {
+                // Remove o usuário do array global
+                appData.users = appData.users.filter(u => u.id !== userId);
+
+                // Limpa também notas, frequências ou vínculos associados se houver
+                appData.grades = appData.grades.filter(g => g.studentId !== userId);
+                appData.attendance = appData.attendance.filter(a => a.studentId !== userId);
+
+                // Persiste no LocalStorage
+                saveData();
+
+                // Re-renderiza imediatamente a lista e contadores
+                renderUsersList();
+
+                showToast(`Usuário "${userName}" foi excluído com sucesso.`);
+            }
+        }
+
+        function renderUsersList() {
+            const tbody = document.getElementById('usersTableBody');
+            const roleFilterElement = document.getElementById('userFilterRole');
+            const roleFilter = roleFilterElement ? roleFilterElement.value : 'todos';
+            const searchInputElement = document.getElementById('userSearchInput');
+            const searchText = searchInputElement ? searchInputElement.value.toLowerCase() : '';
+
+            let filtered = appData.users.filter(u => {
+                const matchesRole = roleFilter === 'todos' || u.role === roleFilter;
+                const matchesSearch = u.name.toLowerCase().includes(searchText) || u.email.toLowerCase().includes(searchText);
+                return matchesRole && matchesSearch;
+            });
+
+            // Atualizar contadores em tempo real na interface da Gestão
+            const countAlunos = appData.users.filter(u => u.role === 'estudantes').length;
+            const countProfessores = appData.users.filter(u => u.role === 'professores').length;
+            const countResponsaveis = appData.users.filter(u => u.role === 'responsaveis').length;
+
+            const elemAlunos = document.getElementById('statTotalAlunos');
+            const elemProfessores = document.getElementById('statTotalProfessores');
+            const elemResponsaveis = document.getElementById('statTotalResponsaveis');
+
+            if (elemAlunos) elemAlunos.innerText = countAlunos;
+            if (elemProfessores) elemProfessores.innerText = countProfessores;
+            if (elemResponsaveis) elemResponsaveis.innerText = countResponsaveis;
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-400">Nenhum usuário encontrado com estes filtros.</td></tr>`;
+                return;
+            }
+
+            let html = '';
+            filtered.forEach(u => {
+                const badgeColors = {
+                    gestao: 'bg-purple-100 text-purple-800',
+                    professores: 'bg-blue-100 text-blue-800',
+                    estudantes: 'bg-emerald-100 text-emerald-800',
+                    responsaveis: 'bg-amber-100 text-amber-800'
+                };
+
+                html += `
+                    <tr>
+                        <td class="p-3 font-bold text-slate-800">${u.name}</td>
+                        <td class="p-3 font-mono text-[11px] text-slate-600">${u.email}</td>
+                        <td class="p-3"><span class="text-[10px] px-2 py-0.5 rounded-full font-bold uppercase ${badgeColors[u.role] || 'bg-slate-100'}">${u.role}</span></td>
+                        <td class="p-3 text-slate-600">${u.details || '-'}</td>
+                        <td class="p-3 text-center">
+                            <button onclick="deleteUser('${u.id}')" class="text-red-600 hover:text-red-800 hover:bg-red-50 p-1.5 rounded-lg transition border border-transparent hover:border-red-200" title="Excluir Usuário">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            tbody.innerHTML = html;
+            lucide.createIcons();
+        }
+
+        // PUBLICAÇÃO DE AVISOS
+        function saveNotice(e) {
+            e.preventDefault();
+            const title = document.getElementById('noticeTitle').value;
+            const audience = document.getElementById('noticeAudience').value;
+            const body = document.getElementById('noticeBody').value;
+
+            appData.notices.unshift({
+                id: Date.now(),
+                title,
+                audience,
+                body,
+                date: new Date().toLocaleDateString('pt-BR')
+            });
+
+            saveData();
+            renderNoticesAll();
+            e.target.reset();
+            showToast("Comunicado publicado com sucesso!");
+        }
+
+        function renderNoticesAll() {
+            document.getElementById('gestaoCountAvisos').innerText = appData.notices.length;
+
+            // Render Gestão
+            const gestaoContainer = document.getElementById('gestaoNoticesList');
+            gestaoContainer.innerHTML = buildNoticesHTML(appData.notices);
+
+            // Render Professor
+            const teacherContainer = document.getElementById('teacherNoticesList');
+            if (teacherContainer) {
+                const teacherNotices = appData.notices.filter(n => n.audience === 'todos' || n.audience === 'professores');
+                teacherContainer.innerHTML = buildNoticesHTML(teacherNotices);
+            }
+
+            // Render Estudante
+            const studentContainer = document.getElementById('studentNoticesList');
+            if (studentContainer) {
+                const studentNotices = appData.notices.filter(n => n.audience === 'todos' || n.audience === 'estudantes');
+                studentContainer.innerHTML = buildNoticesHTML(studentNotices);
+            }
+
+            // Render Responsável
+            const parentContainer = document.getElementById('parentNoticesList');
+            if (parentContainer) {
+                const parentNotices = appData.notices.filter(n => n.audience === 'todos' || n.audience === 'responsaveis');
+                parentContainer.innerHTML = buildNoticesHTML(parentNotices);
+            }
+        }
+
+        function buildNoticesHTML(list) {
+            if (!list || list.length === 0) {
+                return `<p class="text-xs text-slate-400 py-3 text-center">Nenhum aviso disponível.</p>`;
+            }
+            return list.map(item => `
+                <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
+                    <div class="flex justify-between items-start">
+                        <span class="text-[10px] font-bold text-brand-800 bg-brand-50 px-2 py-0.5 rounded border border-brand-200">
+                            Público: ${item.audience}
+                        </span>
+                        <span class="text-[10px] text-slate-400 font-mono">${item.date}</span>
+                    </div>
+                    <h4 class="font-bold text-slate-800 text-xs mt-1.5">${item.title}</h4>
+                    <p class="text-xs text-slate-600 mt-1">${item.body}</p>
+                </div>
+            `).join('');
+        }
+
+        // DIÁRIO DE CLASSE & FREQUÊNCIA (ROTA PROFESSOR)
+        function renderGradesTable() {
+            const tbody = document.getElementById('gradesTableBody');
+            let html = '';
+
+            appData.grades.forEach((student, index) => {
+                const media = ((parseFloat(student.n1) + parseFloat(student.n2)) / 2).toFixed(1);
+                html += `
+                    <tr>
+                        <td class="p-3 font-bold text-slate-800">${student.name} <span class="block text-[10px] font-normal text-slate-500">${student.subject}</span></td>
+                        <td class="p-3">
+                            <input type="number" step="0.5" min="0" max="10" value="${student.n1}" onchange="updateGrade(${index}, 'n1', this.value)" class="w-16 p-1 rounded border border-slate-300 text-xs text-center font-bold">
+                        </td>
+                        <td class="p-3">
+                            <input type="number" step="0.5" min="0" max="10" value="${student.n2}" onchange="updateGrade(${index}, 'n2', this.value)" class="w-16 p-1 rounded border border-slate-300 text-xs text-center font-bold">
+                        </td>
+                        <td class="p-3 font-extrabold ${media >= 7 ? 'text-emerald-600' : 'text-amber-600'}">${media}</td>
+                        <td class="p-3 text-center">
+                            <span class="text-[10px] px-2 py-0.5 rounded-full font-bold ${media >= 7 ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">
+                                ${media >= 7 ? 'Aprovado' : 'Atenção'}
+                            </span>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            tbody.innerHTML = html;
+        }
+
+        function updateGrade(index, field, value) {
+            appData.grades[index][field] = parseFloat(value) || 0;
+            saveData();
+            renderGradesTable();
+            showToast("Nota atualizada no diário de classe!");
+        }
+
+        function renderAttendanceList() {
+            const container = document.getElementById('attendanceList');
+            let html = '';
+
+            appData.attendance.forEach((item, index) => {
+                html += `
+                    <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-200">
+                        <span class="text-xs font-bold text-slate-700">${item.name}</span>
+                        <label class="inline-flex items-center cursor-pointer">
+                            <input type="checkbox" ${item.present ? 'checked' : ''} onchange="toggleAttendance(${index})" class="sr-only peer">
+                            <div class="w-9 h-5 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-600 relative"></div>
+                        </label>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function toggleAttendance(index) {
+            appData.attendance[index].present = !appData.attendance[index].present;
+            saveData();
+        }
+
+        function saveAttendance(e) {
+            e.preventDefault();
+            showToast("Registro de presença sincronizado com sucesso!");
+        }
+
+        // VISÃO DO ESTUDANTE
+        function renderStudentView() {
+            if (!currentUser) return;
+
+            document.getElementById('studentWelcomeHeading').innerText = `Boletim de ${currentUser.name}`;
+
+            // Filtrar notas do aluno atual ou utilizar lista demonstrativa
+            let studentGrades = appData.grades.filter(g => g.studentId === currentUser.id || g.name === currentUser.name);
+
+            if (studentGrades.length === 0) {
+                studentGrades = [
+                    { subject: "Matemática", n1: 9.5, n2: 9.0 },
+                    { subject: "Língua Portuguesa", n1: 8.5, n2: 8.0 },
+                    { subject: "Física", n1: 9.0, n2: 8.5 },
+                    { subject: "Química", n1: 8.0, n2: 9.0 }
+                ];
+            }
+
+            const tbody = document.getElementById('studentReportCard');
+            let totalMedia = 0;
+            let html = '';
+
+            studentGrades.forEach(sub => {
+                const media = ((parseFloat(sub.n1) + parseFloat(sub.n2)) / 2);
+                totalMedia += media;
+                html += `
+                    <tr class="hover:bg-slate-50">
+                        <td class="p-3 font-bold text-slate-800">${sub.subject}</td>
+                        <td class="p-3 font-semibold">${sub.n1}</td>
+                        <td class="p-3 font-semibold">${sub.n2}</td>
+                        <td class="p-3 font-extrabold text-brand-800">${media.toFixed(1)}</td>
+                        <td class="p-3"><span class="text-[10px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-bold">Aprovado</span></td>
+                    </tr>
+                `;
+            });
+
+            tbody.innerHTML = html;
+            const avg = (totalMedia / studentGrades.length).toFixed(1);
+            document.getElementById('studentAverage').innerText = avg;
+        }
+
+        // VISÃO DO RESPONSÁVEL
+        function renderParentView() {
+            if (!currentUser) return;
+
+            let linkedStudent = appData.users.find(u => u.id === currentUser.linkedStudentId);
+            if (!linkedStudent) {
+                linkedStudent = appData.users.find(u => u.role === 'estudantes') || { name: 'Lucas Andrade', details: '3º Ano A' };
+            }
+
+            document.getElementById('parentStudentLinkedName').innerText = `Estudante Vinculado: ${linkedStudent.name} (${linkedStudent.details || '3º Ano A'})`;
+
+            let studentGrades = appData.grades.filter(g => g.studentId === linkedStudent.id || g.name === linkedStudent.name);
+            if (studentGrades.length === 0) {
+                studentGrades = [
+                    { subject: "Matemática", n1: 9.5, n2: 9.0 },
+                    { subject: "Língua Portuguesa", n1: 8.5, n2: 8.0 },
+                    { subject: "Física", n1: 9.0, n2: 8.5 },
+                    { subject: "Química", n1: 8.0, n2: 9.0 }
+                ];
+            }
+
+            const tbody = document.getElementById('parentReportCard');
+            let html = '';
+
+            studentGrades.forEach(sub => {
+                const media = ((parseFloat(sub.n1) + parseFloat(sub.n2)) / 2).toFixed(1);
+                html += `
+                    <tr class="hover:bg-slate-50">
+                        <td class="p-3 font-bold text-slate-800">${sub.subject}</td>
+                        <td class="p-3 font-medium">${sub.n1}</td>
+                        <td class="p-3 font-medium">${sub.n2}</td>
+                        <td class="p-3 font-bold text-brand-800">${media}</td>
+                        <td class="p-3"><span class="text-[10px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-bold">Regular</span></td>
+                    </tr>
+                `;
+            });
+
+            tbody.innerHTML = html;
+        }
+
+        function sendMessageToSchool(e) {
+            e.preventDefault();
+            showToast("Mensagem enviada com sucesso para a coordenação pedagógica!");
+            e.target.reset();
+        }
+
+        // RENDER GERAL DE ACORDO COM O PERFIL LOGADO
+        function renderCurrentRoleView() {
+            renderNoticesAll();
+            
+            if (!currentUser) return;
+
+            if (currentUser.role === 'gestao') {
+                renderUsersList();
+            } else if (currentUser.role === 'professores') {
+                renderGradesTable();
+                renderAttendanceList();
+            } else if (currentUser.role === 'estudantes') {
+                renderStudentView();
+            } else if (currentUser.role === 'responsaveis') {
+                renderParentView();
+            }
+        }
+
+        // TOAST NOTIFICATIONS
+        function showToast(msg) {
+            const toast = document.getElementById('toastNotification');
+            document.getElementById('toastMessage').innerText = msg;
+            toast.classList.remove('hidden');
+            setTimeout(() => { hideToast(); }, 3500);
+        }
+
+        function hideToast() {
+            document.getElementById('toastNotification').classList.add('hidden');
+        }
+
+        // INCORPORAÇÃO GOOGLE SITES
+        function toggleEmbedModal() {
+            const modal = document.getElementById('embedModal');
+            modal.classList.toggle('hidden');
+            const iframeCode = `<iframe src="${window.location.href}" width="100%" height="800" frameborder="0" allowfullscreen></iframe>`;
+            document.getElementById('embedCodeText').value = iframeCode;
+        }
+
+        function copyEmbedCode() {
+            const text = document.getElementById('embedCodeText');
+            text.select();
+            document.execCommand('copy');
+            showToast("Código HTML copiado para a área de transferência!");
+        }
+
+        // INICIALIZAÇÃO DA APLICAÇÃO
+        window.onload = function() {
+            lucide.createIcons();
+            navigateTo('login');
+        };
+    </script>
+</body>
+</html>
