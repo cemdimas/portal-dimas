@@ -267,6 +267,35 @@
                 </div>
             </div>
 
+            <!-- Cadastros acadêmicos e vínculos -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <section class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <h3 class="font-bold text-base mb-4">Turmas e disciplinas</h3>
+                    <form onsubmit="createAcademicItem(event, 'classes')" class="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-4">
+                        <input id="className" required placeholder="Ex.: 2ª Série A" class="text-xs p-2.5 rounded-lg border">
+                        <input id="classShift" placeholder="Turno (matutino)" class="text-xs p-2.5 rounded-lg border">
+                        <button class="bg-brand-700 text-white text-xs font-bold p-2.5 rounded-lg">Adicionar turma</button>
+                    </form>
+                    <form onsubmit="createAcademicItem(event, 'subjects')" class="flex gap-2 mb-4">
+                        <input id="subjectName" required placeholder="Nome da disciplina" class="flex-1 min-w-0 text-xs p-2.5 rounded-lg border">
+                        <button class="bg-brand-700 text-white text-xs font-bold px-4 rounded-lg">Adicionar disciplina</button>
+                    </form>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div><h4 class="font-semibold text-xs mb-2">Turmas cadastradas</h4><div id="classesList" class="space-y-2 text-xs"></div></div>
+                        <div><h4 class="font-semibold text-xs mb-2">Disciplinas cadastradas</h4><div id="subjectsList" class="space-y-2 text-xs"></div></div>
+                    </div>
+                </section>
+                <section class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <h3 class="font-bold text-base mb-4">Vincular professor, disciplina e turma</h3>
+                    <form onsubmit="createTeachingAssignment(event)" class="space-y-3">
+                        <select id="assignTeacher" required class="w-full text-xs p-2.5 rounded-lg border"><option value="">Selecione o professor</option></select>
+                        <select id="assignSubject" required class="w-full text-xs p-2.5 rounded-lg border"><option value="">Selecione a disciplina</option></select>
+                        <select id="assignClass" required class="w-full text-xs p-2.5 rounded-lg border"><option value="">Selecione a turma</option></select>
+                        <button class="w-full bg-brand-700 text-white text-xs font-bold p-3 rounded-lg">Salvar vínculo</button>
+                    </form>
+                    <h4 class="font-semibold text-xs mt-5 mb-2">Vínculos ativos</h4><div id="teachingAssignmentsList" class="space-y-2 text-xs"></div>
+                </section>
+            </div>
             <!-- Avisos -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm lg:col-span-1">
@@ -294,6 +323,40 @@
         <div id="route-professores" class="route-view hidden space-y-6">
             <div class="bg-gradient-to-r from-brand-900 to-brand-700 rounded-2xl p-6 text-white shadow-md">
                 <h2 class="text-2xl font-extrabold">Diário de Classe</h2>
+            </div>
+            <div class="bg-white p-6 rounded-2xl border shadow-sm">
+                <h3 class="font-bold text-base mb-4">Lançamento de notas</h3>
+                <form onsubmit="saveGrade(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+                    <select id="gradeAssignment" required class="text-xs p-2.5 rounded-lg border"><option value="">Turma e disciplina</option></select>
+                    <select id="gradeStudent" required class="text-xs p-2.5 rounded-lg border"><option value="">Estudante</option></select>
+                    <select id="gradeTerm" class="text-xs p-2.5 rounded-lg border"><option value="n1">Nota N1</option><option value="n2">Nota N2</option></select>
+                    <input id="gradeScore" type="number" min="0" max="10" step="0.1" required placeholder="Nota (0 a 10)" class="text-xs p-2.5 rounded-lg border">
+                    <button class="bg-brand-700 text-white text-xs font-bold p-2.5 rounded-lg">Salvar nota</button>
+                </form>
+                <p class="text-[11px] text-slate-500 mt-2">As notas N1 e N2 alimentam a média simples exibida no boletim.</p>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <section class="bg-white p-6 rounded-2xl border shadow-sm">
+                    <h3 class="font-bold text-base mb-4">Cadastrar atividade avaliativa</h3>
+                    <form onsubmit="createActivity(event)" class="space-y-3">
+                        <select id="activityAssignment" required class="w-full text-xs p-2.5 rounded-lg border"><option value="">Turma e disciplina</option></select>
+                        <input id="activityTitle" required placeholder="Título da atividade" class="w-full text-xs p-2.5 rounded-lg border">
+                        <div class="grid grid-cols-2 gap-2"><select id="activityType" class="text-xs p-2.5 rounded-lg border"><option>Atividade</option><option>Trabalho</option><option>Prova</option><option>Projeto</option></select><input id="activityMaxScore" type="number" min="0.1" step="0.1" value="10" required class="text-xs p-2.5 rounded-lg border" aria-label="Pontuação máxima"></div>
+                        <input id="activityDueDate" type="date" class="w-full text-xs p-2.5 rounded-lg border" aria-label="Prazo">
+                        <textarea id="activityDescription" rows="2" placeholder="Orientações (opcional)" class="w-full text-xs p-2.5 rounded-lg border"></textarea>
+                        <button class="w-full bg-brand-700 text-white text-xs font-bold p-3 rounded-lg">Publicar atividade</button>
+                    </form>
+                    <h4 class="font-semibold text-xs mt-5 mb-2">Atividades cadastradas</h4><div id="teacherActivitiesList" class="space-y-2 text-xs"></div>
+                </section>
+                <section class="bg-white p-6 rounded-2xl border shadow-sm">
+                    <h3 class="font-bold text-base mb-4">Frequência diária</h3>
+                    <form onsubmit="loadAttendanceRoster(event)" class="space-y-3">
+                        <select id="attendanceAssignment" required class="w-full text-xs p-2.5 rounded-lg border"><option value="">Selecione turma e disciplina</option></select>
+                        <input id="attendanceDate" type="date" required class="w-full text-xs p-2.5 rounded-lg border">
+                        <button class="w-full bg-brand-700 text-white text-xs font-bold p-3 rounded-lg">Carregar estudantes</button>
+                    </form>
+                    <div id="attendanceRoster" class="mt-4 space-y-2"></div>
+                </section>
             </div>
             <div class="bg-white p-6 rounded-2xl border shadow-sm">
                 <table class="w-full text-left text-xs">
@@ -409,7 +472,11 @@
             users: [...SEED_USERS],
             notices: [...SEED_NOTICES],
             grades: [...SEED_GRADES],
-            attendance: []
+            attendance: [],
+            classes: [],
+            subjects: [],
+            teachingAssignments: [],
+            activities: []
         };
         window.currentUser = null;
 
@@ -436,6 +503,11 @@
                     gradesSnap.forEach(d => window.appData.grades.push(d.data()));
                 }
 
+                for (const key of ["classes", "subjects", "teachingAssignments", "activities", "attendance"]) {
+                    const snap = await getDocs(collection(db, key));
+                    window.appData[key] = [];
+                    snap.forEach(d => window.appData[key].push(d.data()));
+                }
                 if (window.currentUser) renderCurrentRoleView();
             } catch (err) {
                 console.log("Usando modo offline/local temporário:", err);
@@ -598,8 +670,9 @@
         function renderCurrentRoleView() {
             renderNoticesAll();
             if (!window.currentUser) return;
-            if (window.currentUser.role === 'gestao') renderUsersList();
+            if (window.currentUser.role === 'gestao') { renderUsersList(); renderAcademicManagement(); }
             else if (window.currentUser.role === 'professores') {
+                fillTeacherAssignmentSelect('activityAssignment'); fillTeacherAssignmentSelect('attendanceAssignment'); renderGradeRoster(); renderTeacherActivities();
                 document.getElementById('gradesTableBody').innerHTML = window.appData.grades.map(g => `
                     <tr><td class="p-3 font-bold">${g.name} (${g.subject})</td><td class="p-3">${g.n1}</td><td class="p-3">${g.n2}</td><td class="p-3 font-bold">${((g.n1+g.n2)/2).toFixed(1)}</td></tr>
                 `).join('');
@@ -618,6 +691,132 @@
                 `).join('');
             }
         }
+
+        function escapeHTML(value) {
+            return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+        }
+        function requireRole(role) {
+            if (!window.currentUser || window.currentUser.role !== role) {
+                showToast("Você não tem permissão para realizar esta ação.");
+                return false;
+            }
+            return true;
+        }
+        async function saveCollectionItem(collectionName, item) {
+            await setDoc(doc(db, collectionName, item.id), item);
+            const list = window.appData[collectionName];
+            const index = list.findIndex(x => x.id === item.id);
+            if (index >= 0) list[index] = item; else list.push(item);
+        }
+        window.createAcademicItem = async function(e, kind) {
+            e.preventDefault();
+            if (!requireRole('gestao')) return;
+            const isClass = kind === 'classes';
+            const name = document.getElementById(isClass ? 'className' : 'subjectName').value.trim();
+            if (!name) return;
+            const item = {id: (isClass ? 'c_' : 's_') + Date.now(), name};
+            if (isClass) item.shift = document.getElementById('classShift').value.trim();
+            try {
+                await saveCollectionItem(kind, item);
+                e.target.reset(); renderAcademicManagement();
+                showToast(isClass ? 'Turma cadastrada.' : 'Disciplina cadastrada.');
+            } catch (err) { console.error(err); showToast('Não foi possível salvar. Verifique a conexão e as regras do Firebase.'); }
+        };
+        window.createTeachingAssignment = async function(e) {
+            e.preventDefault();
+            if (!requireRole('gestao')) return;
+            const teacherId = document.getElementById('assignTeacher').value;
+            const subjectId = document.getElementById('assignSubject').value;
+            const classId = document.getElementById('assignClass').value;
+            if (!teacherId || !subjectId || !classId) return;
+            if (window.appData.teachingAssignments.some(a => a.teacherId === teacherId && a.subjectId === subjectId && a.classId === classId)) {
+                showToast('Este vínculo já existe.'); return;
+            }
+            const teacher = window.appData.users.find(u => u.id === teacherId);
+            const subject = window.appData.subjects.find(x => x.id === subjectId);
+            const cls = window.appData.classes.find(x => x.id === classId);
+            const item = {id:'ta_'+Date.now(), teacherId, teacherName:teacher.name, subjectId, subjectName:subject.name, classId, className:cls.name};
+            try { await saveCollectionItem('teachingAssignments', item); renderAcademicManagement(); renderCurrentRoleView(); e.target.reset(); showToast('Vínculo salvo.'); }
+            catch(err) { console.error(err); showToast('Erro ao salvar vínculo no Firebase.'); }
+        };
+        function renderAcademicManagement() {
+            const classes = window.appData.classes || [], subjects = window.appData.subjects || [];
+            document.getElementById('classesList').innerHTML = classes.map(x => `<div class="p-2 rounded bg-slate-50 border flex justify-between gap-2"><span>${escapeHTML(x.name)} ${x.shift ? '· '+escapeHTML(x.shift) : ''}</span><button onclick="removeAcademicItem('classes','${x.id}')" class="text-red-600">Excluir</button></div>`).join('') || '<p class="text-slate-500">Nenhuma turma cadastrada.</p>';
+            document.getElementById('subjectsList').innerHTML = subjects.map(x => `<div class="p-2 rounded bg-slate-50 border flex justify-between gap-2"><span>${escapeHTML(x.name)}</span><button onclick="removeAcademicItem('subjects','${x.id}')" class="text-red-600">Excluir</button></div>`).join('') || '<p class="text-slate-500">Nenhuma disciplina cadastrada.</p>';
+            const fill = (id, items, label) => { const el=document.getElementById(id); if(!el)return; const old=el.value; el.innerHTML=`<option value="">${label}</option>`+items.map(x=>`<option value="${x.id}">${escapeHTML(x.name)}</option>`).join(''); if(items.some(x=>x.id===old))el.value=old; };
+            fill('assignTeacher', window.appData.users.filter(u=>u.role==='professores'), 'Selecione o professor');
+            fill('assignSubject', subjects, 'Selecione a disciplina'); fill('assignClass', classes, 'Selecione a turma');
+            document.getElementById('teachingAssignmentsList').innerHTML = (window.appData.teachingAssignments||[]).map(a=>`<div class="p-2 rounded bg-slate-50 border"><b>${escapeHTML(a.teacherName)}</b> · ${escapeHTML(a.subjectName)} · ${escapeHTML(a.className)} <button onclick="removeAcademicItem('teachingAssignments','${a.id}')" class="text-red-600 ml-2">Excluir</button></div>`).join('') || '<p class="text-slate-500">Nenhum vínculo cadastrado.</p>';
+        }
+        window.removeAcademicItem = async function(kind, id) {
+            if (!requireRole('gestao') || !confirm('Confirma a exclusão deste registro?')) return;
+            try { await deleteDoc(doc(db, kind, id)); window.appData[kind] = window.appData[kind].filter(x=>x.id!==id); renderAcademicManagement(); renderCurrentRoleView(); showToast('Registro excluído.'); }
+            catch(err) { console.error(err); showToast('Não foi possível excluir o registro.'); }
+        };
+        function teacherAssignments() { return (window.appData.teachingAssignments||[]).filter(a=>a.teacherId===window.currentUser?.id); }
+        function fillTeacherAssignmentSelect(id) {
+            const el=document.getElementById(id); if(!el)return;
+            const old=el.value; const arr=teacherAssignments();
+            el.innerHTML='<option value="">Selecione turma e disciplina</option>'+arr.map(a=>`<option value="${a.id}">${escapeHTML(a.className)} — ${escapeHTML(a.subjectName)}</option>`).join('');
+            if(arr.some(a=>a.id===old))el.value=old;
+        }
+        window.saveGrade = async function(e) {
+            e.preventDefault(); if(!requireRole('professores'))return;
+            const a=teacherAssignments().find(x=>x.id===document.getElementById('gradeAssignment').value);
+            const studentId=document.getElementById('gradeStudent').value;
+            const term=document.getElementById('gradeTerm').value;
+            const score=Number(document.getElementById('gradeScore').value);
+            const student=window.appData.users.find(u=>u.id===studentId);
+            if(!a||!student||!Number.isFinite(score)||score<0||score>10){showToast('Confira turma, estudante e nota (0 a 10).');return;}
+            let item=window.appData.grades.find(g=>g.studentId===studentId&&g.subject===a.subjectName);
+            if(item) item={...item,[term]:score,name:student.name,classId:a.classId,teacherId:window.currentUser.id};
+            else item={id:'g_'+studentId+'_'+a.subjectId,studentId,name:student.name,subject:a.subjectName,n1:term==='n1'?score:null,n2:term==='n2'?score:null,classId:a.classId,teacherId:window.currentUser.id};
+            try { await setDoc(doc(db,'grades',item.id),item); const i=window.appData.grades.findIndex(g=>g.id===item.id); if(i>=0)window.appData.grades[i]=item;else window.appData.grades.push(item); renderCurrentRoleView(); showToast('Nota lançada com sucesso.'); }
+            catch(err){console.error(err);showToast('Erro ao salvar nota no Firebase.');}
+        };
+        function renderGradeRoster() {
+            fillTeacherAssignmentSelect('gradeAssignment');
+            const select=document.getElementById('gradeStudent'); if(!select)return;
+            const a=teacherAssignments().find(x=>x.id===document.getElementById('gradeAssignment').value);
+            const students=a?window.appData.users.filter(u=>u.role==='estudantes'&&(u.classId===a.classId||u.details===a.className||u.details?.startsWith(a.className+' -'))):[];
+            const old=select.value;
+            select.innerHTML='<option value="">Estudante</option>'+students.map(st=>`<option value="${st.id}">${escapeHTML(st.name)}</option>`).join('');
+            if(students.some(st=>st.id===old))select.value=old;
+        }
+        document.getElementById('gradeAssignment')?.addEventListener('change', renderGradeRoster);
+
+        window.createActivity = async function(e) {
+            e.preventDefault(); if(!requireRole('professores'))return;
+            const a=teacherAssignments().find(x=>x.id===document.getElementById('activityAssignment').value);
+            if(!a){showToast('Selecione uma turma atribuída a você.');return;}
+            const item={id:'act_'+Date.now(), assignmentId:a.id, teacherId:window.currentUser.id, classId:a.classId, subjectId:a.subjectId, className:a.className, subjectName:a.subjectName, title:document.getElementById('activityTitle').value.trim(), type:document.getElementById('activityType').value, maxScore:Number(document.getElementById('activityMaxScore').value), dueDate:document.getElementById('activityDueDate').value, description:document.getElementById('activityDescription').value.trim(), createdAt:new Date().toISOString()};
+            try{await saveCollectionItem('activities',item);e.target.reset();renderTeacherActivities();showToast('Atividade publicada.');}
+            catch(err){console.error(err);showToast('Erro ao publicar atividade.');}
+        };
+        function renderTeacherActivities() {
+            const ids=teacherAssignments().map(a=>a.id);
+            const items=(window.appData.activities||[]).filter(a=>a.teacherId===window.currentUser?.id || ids.includes(a.assignmentId));
+            const el=document.getElementById('teacherActivitiesList'); if(el)el.innerHTML=items.map(a=>`<div class="p-3 rounded-lg border bg-slate-50"><b>${escapeHTML(a.title)}</b> · ${escapeHTML(a.type)}<p>${escapeHTML(a.className)} — ${escapeHTML(a.subjectName)} · Nota máxima: ${a.maxScore}</p><p>${a.dueDate ? 'Prazo: '+escapeHTML(a.dueDate) : ''}</p><p>${escapeHTML(a.description)}</p></div>`).join('')||'<p class="text-slate-500">Nenhuma atividade publicada.</p>';
+        }
+        window.loadAttendanceRoster = function(e) {
+            e.preventDefault(); if(!requireRole('professores'))return;
+            const a=teacherAssignments().find(x=>x.id===document.getElementById('attendanceAssignment').value);
+            if(!a){showToast('Selecione uma turma atribuída a você.');return;}
+            const students=window.appData.users.filter(u=>u.role==='estudantes' && (u.classId===a.classId || u.details===a.className || u.details?.startsWith(a.className+' -')));
+            const date=document.getElementById('attendanceDate').value;
+            const existing=(window.appData.attendance||[]).find(x=>x.assignmentId===a.id&&x.date===date);
+            const el=document.getElementById('attendanceRoster');
+            if(!students.length){el.innerHTML='<p class="text-amber-700 text-xs">Não há estudantes vinculados a esta turma. A gestão deve cadastrar/matricular os estudantes na turma.</p>';return;}
+            el.innerHTML=students.map(st=>{const record=existing?.records?.find(r=>r.studentId===st.id);return `<label class="flex items-center justify-between gap-3 p-2 border rounded-lg text-xs"><span>${escapeHTML(st.name)}</span><select data-student="${st.id}" class="attendance-status border rounded p-2"><option value="presente" ${record?.status==='presente'?'selected':''}>Presente</option><option value="falta" ${record?.status==='falta'?'selected':''}>Falta</option><option value="justificada" ${record?.status==='justificada'?'selected':''}>Falta justificada</option></select></label>`}).join('')+`<button onclick="saveAttendance('${a.id}','${date}')" class="w-full mt-3 bg-brand-700 text-white text-xs font-bold p-3 rounded-lg">Salvar frequência</button>`;
+        };
+        window.saveAttendance = async function(assignmentId,date) {
+            if(!requireRole('professores'))return;
+            const assignment=teacherAssignments().find(a=>a.id===assignmentId); if(!assignment)return;
+            const records=[...document.querySelectorAll('.attendance-status')].map(el=>({studentId:el.dataset.student,status:el.value}));
+            const item={id:'att_'+assignmentId+'_'+date,assignmentId,teacherId:window.currentUser.id,classId:assignment.classId,subjectId:assignment.subjectId,className:assignment.className,subjectName:assignment.subjectName,date,records};
+            try{await saveCollectionItem('attendance',item);showToast('Frequência diária salva.');}
+            catch(err){console.error(err);showToast('Erro ao salvar frequência.');}
+        };
 
         window.showToast = function(msg) {
             const toast = document.getElementById('toastNotification');
@@ -639,6 +838,7 @@
 
         window.onload = function() {
             lucide.createIcons();
+            document.getElementById('attendanceDate').value = new Date().toISOString().slice(0,10);
             window.navigateTo('login');
             syncWithFirestore();
         };
