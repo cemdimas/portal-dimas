@@ -632,17 +632,27 @@
 
 
         window.deleteUser = async function(userId) {
+            if (!requireRole('gestao')) return;
             if (window.currentUser && window.currentUser.id === userId) {
-                showToast("Não pode excluir sua própria conta ativa.");
+                showToast("Não é possível excluir a própria conta ativa.");
                 return;
             }
-            if (confirm("Deseja excluir este usuário?")) {
+            const user = window.appData.users.find(u => u.id === userId);
+            if (!user) { showToast("Usuário não encontrado."); return; }
+            if (!confirm(`Deseja excluir o usuário ${user.name}?`)) return;
+
+            try {
+                // Só remove da interface depois que o Firestore confirmar a exclusão.
+                await deleteDoc(doc(db, "users", userId));
                 window.appData.users = window.appData.users.filter(u => u.id !== userId);
-                try { await deleteDoc(doc(db, "users", userId)); } catch (err) { console.log(err); }
                 renderUsersList();
-                showToast("Usuário excluído.");
+                renderAcademicManagement();
+                showToast("Usuário excluído com sucesso.");
+            } catch (err) {
+                console.error("Falha ao excluir usuário no Firestore:", err);
+                showToast("Não foi possível excluir. Verifique as regras/permissões do Firebase e a conexão.");
             }
-        }
+        };
 
         window.renderUsersList = function() {
             const tbody = document.getElementById('usersTableBody');
@@ -820,13 +830,39 @@
         };
 
         window.editUser = async function(id) {
-            if(!requireRole('gestao'))return;const user=window.appData.users.find(u=>u.id===id);if(!user)return;
-            const name=prompt('Nome completo:',user.name);if(name===null)return;
-            const email=prompt('E-mail/login:',user.email);if(email===null)return;
-            const details=prompt('Detalhes (turma, função etc.):',user.details||'');if(details===null)return;
-            if(!name.trim()||!email.trim()){showToast('Nome e e-mail são obrigatórios.');return;}
-            Object.assign(user,{name:name.trim(),email:email.trim(),details:details.trim()});
-            try{await setDoc(doc(db,'users',id),user);renderUsersList();renderCurrentRoleView();showToast('Usuário atualizado.');}catch(err){console.error(err);showToast('Erro ao atualizar usuário.');}
+            if (!requireRole('gestao')) return;
+            const user = window.appData.users.find(u => u.id === id);
+            if (!user) { showToast("Usuário não encontrado."); return; }
+
+            const name = prompt("Nome completo:", user.name);
+            if (name === null) return;
+            const email = prompt("E-mail/login:", user.email);
+            if (email === null) return;
+            const details = prompt("Detalhes (turma, função etc.):", user.details || "");
+            if (details === null) return;
+
+            const cleanName = name.trim();
+            const cleanEmail = email.trim();
+            if (!cleanName || !cleanEmail) {
+                showToast("Nome e e-mail são obrigatórios.");
+                return;
+            }
+
+            // Não altera o estado local até confirmar a gravação no banco.
+            const updatedUser = { ...user, name: cleanName, email: cleanEmail, details: details.trim() };
+            try {
+                await setDoc(doc(db, "users", id), updatedUser);
+                const index = window.appData.users.findIndex(u => u.id === id);
+                if (index >= 0) window.appData.users[index] = updatedUser;
+                if (window.currentUser?.id === id) window.currentUser = updatedUser;
+                renderUsersList();
+                renderAcademicManagement();
+                renderCurrentRoleView();
+                showToast("Usuário atualizado com sucesso.");
+            } catch (err) {
+                console.error("Falha ao editar usuário no Firestore:", err);
+                showToast("Não foi possível salvar a edição. Verifique as regras/permissões do Firebase e a conexão.");
+            }
         };
         window.editAcademicItem = async function(kind,id) {
             if(!requireRole('gestao'))return;
@@ -862,9 +898,22 @@
             try{await deleteDoc(doc(db,'activities',id));window.appData.activities=window.appData.activities.filter(x=>x.id!==id);const related=(window.appData.grades||[]).filter(g=>g.activityId===id);for(const g of related)await deleteDoc(doc(db,'grades',g.id));window.appData.grades=window.appData.grades.filter(g=>g.activityId!==id);renderTeacherActivities();renderGradeRoster();renderCurrentRoleView();showToast('Atividade e notas associadas excluídas.');}catch(err){console.error(err);showToast('Erro ao excluir atividade ou notas.');}
         };
         window.removeAcademicItem = async function(kind, id) {
-            if (!requireRole('gestao') || !confirm('Confirma a exclusão deste registro?')) return;
-            try { await deleteDoc(doc(db, kind, id)); window.appData[kind] = window.appData[kind].filter(x=>x.id!==id); renderAcademicManagement(); renderCurrentRoleView(); showToast('Registro excluído.'); }
-            catch(err) { console.error(err); showToast('Não foi possível excluir o registro.'); }
+            if (!requireRole('gestao')) return;
+            if (!['classes', 'subjects', 'teachingAssignments'].includes(kind)) {
+                showToast('Tipo de registro inválido.');
+                return;
+            }
+            if (!confirm('Confirma a exclusão deste registro?')) return;
+            try {
+                await deleteDoc(doc(db, kind, id));
+                window.appData[kind] = (window.appData[kind] || []).filter(x => x.id !== id);
+                renderAcademicManagement();
+                renderCurrentRoleView();
+                showToast('Registro excluído com sucesso.');
+            } catch (err) {
+                console.error('Falha ao excluir registro no Firestore:', err);
+                showToast('Não foi possível excluir. Verifique as regras/permissões do Firebase e a conexão.');
+            }
         };
         function teacherAssignments() { return (window.appData.teachingAssignments||[]).filter(a=>a.teacherId===window.currentUser?.id); }
         function fillTeacherAssignmentSelect(id) {
