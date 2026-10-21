@@ -319,17 +319,20 @@
             <!-- Avisos -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm lg:col-span-1">
-                    <h3 class="font-bold text-slate-800 text-base mb-4">Novo Aviso</h3>
+                    <h3 id="noticeFormTitle" class="font-bold text-slate-800 text-base mb-4">Novo Aviso</h3>
                     <form onsubmit="saveNotice(event)" class="space-y-3">
                         <input type="text" id="noticeTitle" required placeholder="Título" class="w-full text-xs p-2.5 rounded-lg border">
-                        <select id="noticeAudience" class="w-full text-xs p-2.5 rounded-lg border">
-                            <option value="todos">Todos</option>
-                            <option value="professores">Professores</option>
-                            <option value="estudantes">Estudantes</option>
-                            <option value="responsaveis">Responsáveis</option>
-                        </select>
+                        <fieldset id="noticeAudience" class="border rounded-lg p-3 space-y-2">
+                            <legend class="text-xs font-semibold text-slate-600 px-1">Exibir para os perfis:</legend>
+                            <label class="flex items-center gap-2 text-xs font-bold"><input type="checkbox" id="noticeAudAll" onchange="toggleNoticeAll(this)"> Todos os perfis</label>
+                            <label class="flex items-center gap-2 text-xs"><input type="checkbox" class="notice-aud" value="professores" onchange="syncNoticeAllBox()"> Professores</label>
+                            <label class="flex items-center gap-2 text-xs"><input type="checkbox" class="notice-aud" value="estudantes" onchange="syncNoticeAllBox()"> Estudantes</label>
+                            <label class="flex items-center gap-2 text-xs"><input type="checkbox" class="notice-aud" value="responsaveis" onchange="syncNoticeAllBox()"> Responsáveis</label>
+                            <p class="text-[10px] text-slate-500">A gestão sempre visualiza todos os avisos.</p>
+                        </fieldset>
                         <textarea id="noticeBody" required rows="3" placeholder="Mensagem..." class="w-full text-xs p-2.5 rounded-lg border"></textarea>
-                        <button type="submit" class="w-full bg-brand-700 text-white font-bold text-xs py-2.5 rounded-lg">Publicar</button>
+                        <button type="submit" id="noticeSubmitBtn" class="w-full bg-brand-700 text-white font-bold text-xs py-2.5 rounded-lg">Publicar</button>
+                        <button type="button" id="noticeCancelBtn" onclick="cancelNoticeEdit()" class="hidden w-full bg-slate-100 text-slate-700 font-bold text-xs py-2.5 rounded-lg border">Cancelar edição</button>
                     </form>
                 </div>
                 <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm lg:col-span-2">
@@ -345,13 +348,30 @@
                 <h2 class="text-2xl font-extrabold">Diário de Classe</h2>
             </div>
             <div class="bg-white p-6 rounded-2xl border shadow-sm">
+                <h3 class="font-bold text-base mb-4 flex items-center gap-2"><i data-lucide="megaphone" class="w-5 h-5 text-brand-700"></i> Mural de Avisos</h3>
+                <div id="professorNoticesList" class="space-y-3 max-h-[300px] overflow-y-auto"></div>
+            </div>
+            <div class="bg-white p-6 rounded-2xl border shadow-sm">
                 <h3 class="font-bold text-base mb-4">Lançamento de notas</h3>
-                <form onsubmit="saveGrade(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
-                    <select id="gradeAssignment" required class="text-xs p-2.5 rounded-lg border"><option value="">Turma e disciplina</option></select>
-                    <select id="gradeActivity" required class="text-xs p-2.5 rounded-lg border"><option value="">Selecione a atividade avaliativa</option></select>
-                    <select id="gradeStudent" required class="text-xs p-2.5 rounded-lg border"><option value="">Estudante</option></select>
-                    <input id="gradeScore" type="number" min="0" max="10" step="0.1" required placeholder="Nota da atividade" class="text-xs p-2.5 rounded-lg border">
-                    <button class="bg-brand-700 text-white text-xs font-bold p-2.5 rounded-lg">Salvar nota</button>
+                <form onsubmit="saveGrade(event)" class="space-y-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <select id="gradeAssignment" required class="text-xs p-2.5 rounded-lg border"><option value="">Turma e disciplina</option></select>
+                        <select id="gradeActivity" required class="text-xs p-2.5 rounded-lg border"><option value="">Selecione a atividade avaliativa</option></select>
+                    </div>
+                    <div class="overflow-x-auto border rounded-xl">
+                        <table class="w-full text-left text-xs">
+                            <thead>
+                                <tr class="bg-slate-50 border-b">
+                                    <th class="p-3">Estudante</th>
+                                    <th id="gradeEntryHeadScore" class="p-3 w-40">Nota</th>
+                                </tr>
+                            </thead>
+                            <tbody id="gradeEntryBody" class="divide-y">
+                                <tr><td colspan="2" class="p-3 text-slate-500">Selecione a turma/disciplina e a atividade para lançar as notas.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <button class="bg-brand-700 text-white text-xs font-bold p-2.5 px-5 rounded-lg">Salvar notas</button>
                 </form>
                 <p id="gradeScoreHint" class="text-[11px] text-slate-500 mt-2">Selecione a atividade cadastrada; a nota respeitará a pontuação máxima definida nela.</p>
             </div>
@@ -379,6 +399,7 @@
                 </section>
             </div>
             <div class="bg-white p-6 rounded-2xl border shadow-sm">
+                <h3 class="font-bold text-base mb-4">Notas lançadas</h3>
                 <table class="w-full text-left text-xs">
                     <thead>
                         <tr class="bg-slate-50 border-b">
@@ -391,12 +412,22 @@
                     <tbody id="gradesTableBody" class="divide-y"></tbody>
                 </table>
             </div>
+            <div class="bg-white p-6 rounded-2xl border shadow-sm">
+                <h3 class="font-bold text-base mb-4">Frequência registrada</h3>
+                <select id="attendanceViewAssignment" class="w-full sm:w-96 text-xs p-2.5 rounded-lg border mb-3"><option value="">Selecione turma e disciplina</option></select>
+                <p class="text-[11px] text-slate-500 mb-3"><b class="text-emerald-700">P</b> = presente · <b class="text-red-600">F</b> = falta · <b class="text-amber-600">J</b> = falta justificada · <b>—</b> = sem registro. A frequência considera presenças ÷ aulas registradas.</p>
+                <div id="attendanceViewContainer" class="overflow-x-auto"><p class="text-xs text-slate-500">Selecione a turma e disciplina para visualizar a frequência.</p></div>
+            </div>
         </div>
 
         <!-- 3. ESTUDANTE -->
         <div id="route-estudantes" class="route-view hidden space-y-6">
             <div class="bg-gradient-to-r from-brand-900 to-brand-700 rounded-2xl p-6 text-white shadow-md">
                 <h2 id="studentWelcomeHeading" class="text-2xl font-extrabold">Meu Boletim</h2>
+            </div>
+            <div class="bg-white p-6 rounded-2xl border shadow-sm">
+                <h3 class="font-bold text-base mb-4 flex items-center gap-2"><i data-lucide="megaphone" class="w-5 h-5 text-brand-700"></i> Mural de Avisos</h3>
+                <div id="studentNoticesList" class="space-y-3 max-h-[300px] overflow-y-auto"></div>
             </div>
             <div class="bg-white p-6 rounded-2xl border shadow-sm">
                 <table class="w-full text-left text-xs">
@@ -417,6 +448,10 @@
         <div id="route-responsaveis" class="route-view hidden space-y-6">
             <div class="bg-gradient-to-r from-brand-900 to-brand-700 rounded-2xl p-6 text-white shadow-md">
                 <h2 class="text-2xl font-extrabold">Acompanhamento do Estudante</h2>
+            </div>
+            <div class="bg-white p-6 rounded-2xl border shadow-sm">
+                <h3 class="font-bold text-base mb-4 flex items-center gap-2"><i data-lucide="megaphone" class="w-5 h-5 text-brand-700"></i> Mural de Avisos</h3>
+                <div id="parentNoticesList" class="space-y-3 max-h-[300px] overflow-y-auto"></div>
             </div>
             <div class="bg-white p-6 rounded-2xl border shadow-sm">
                 <p id="parentStudentLinkedName" class="font-bold text-sm mb-4"></p>
@@ -586,6 +621,8 @@
             document.getElementById('fieldTeacherSubject').classList.toggle('hidden', role !== 'professores');
             document.getElementById('fieldStudentClass').classList.toggle('hidden', role !== 'estudantes');
             document.getElementById('fieldParentLink').classList.toggle('hidden', role !== 'responsaveis');
+            // O campo de turma só é obrigatório para estudantes; oculto e obrigatório impedia o envio dos demais perfis
+            document.getElementById('newUserClass').required = (role === 'estudantes');
             if (role === 'estudantes') fillStudentClassSelect();
             if (role === 'responsaveis') {
                 const select = document.getElementById('newUserLinkedStudent');
@@ -677,31 +714,121 @@
             lucide.createIcons();
         }
 
+        const NOTICE_ROLES = ['professores', 'estudantes', 'responsaveis'];
+        const NOTICE_ROLE_NAMES = { professores: 'Professores', estudantes: 'Estudantes', responsaveis: 'Responsáveis' };
+        let editingNoticeId = null;
+
+        // Perfis que enxergam o aviso (compatível com avisos antigos que tinham apenas "audience")
+        function noticeAudiences(n) {
+            if (Array.isArray(n.audiences)) return n.audiences;
+            if (!n.audience || n.audience === 'todos') return [...NOTICE_ROLES];
+            return String(n.audience).split(',').filter(Boolean);
+        }
+        function noticeAudienceLabel(n) {
+            const a = noticeAudiences(n);
+            if (NOTICE_ROLES.every(r => a.includes(r))) return 'Todos os perfis';
+            return a.map(r => NOTICE_ROLE_NAMES[r] || r).join(', ') || 'Nenhum perfil';
+        }
+        window.toggleNoticeAll = function(box) {
+            document.querySelectorAll('.notice-aud').forEach(c => c.checked = box.checked);
+        }
+        window.syncNoticeAllBox = function() {
+            const boxes = [...document.querySelectorAll('.notice-aud')];
+            document.getElementById('noticeAudAll').checked = boxes.length > 0 && boxes.every(c => c.checked);
+        }
+        function resetNoticeForm() {
+            editingNoticeId = null;
+            document.getElementById('noticeTitle').value = '';
+            document.getElementById('noticeBody').value = '';
+            document.querySelectorAll('.notice-aud').forEach(c => c.checked = false);
+            document.getElementById('noticeAudAll').checked = false;
+            document.getElementById('noticeFormTitle').innerText = 'Novo Aviso';
+            document.getElementById('noticeSubmitBtn').innerText = 'Publicar';
+            document.getElementById('noticeCancelBtn').classList.add('hidden');
+        }
+        window.cancelNoticeEdit = function() { resetNoticeForm(); }
+
         window.saveNotice = async function(e) {
             e.preventDefault();
-            const nId = 'n_' + Date.now();
-            const nObj = {
-                id: nId,
-                title: document.getElementById('noticeTitle').value,
-                audience: document.getElementById('noticeAudience').value,
-                body: document.getElementById('noticeBody').value,
-                date: new Date().toLocaleDateString('pt-BR')
-            };
-            window.appData.notices.unshift(nObj);
-            try { await setDoc(doc(db, "notices", nId), nObj); } catch (err) { console.log(err); }
+            if (!requireRole('gestao')) return;
+            const audiences = [...document.querySelectorAll('.notice-aud')].filter(c => c.checked).map(c => c.value);
+            if (!audiences.length) { showToast('Selecione ao menos um perfil para exibir o aviso.'); return; }
+            const title = document.getElementById('noticeTitle').value.trim();
+            const body = document.getElementById('noticeBody').value.trim();
+            const audience = NOTICE_ROLES.every(r => audiences.includes(r)) ? 'todos' : audiences.join(',');
+            const existing = editingNoticeId ? window.appData.notices.find(n => n.id === editingNoticeId) : null;
+            const nObj = existing
+                ? { ...existing, title, body, audience, audiences, updatedAt: new Date().toLocaleDateString('pt-BR') }
+                : { id: 'n_' + Date.now(), title, audience, audiences, body, date: new Date().toLocaleDateString('pt-BR') };
+            try {
+                await setDoc(doc(db, "notices", nObj.id), nObj);
+                if (existing) { const i = window.appData.notices.findIndex(n => n.id === nObj.id); window.appData.notices[i] = nObj; }
+                else window.appData.notices.unshift(nObj);
+            } catch (err) { console.error(err); showToast('Não foi possível salvar o aviso. Verifique a conexão e as permissões do banco de dados.'); return; }
+            const wasEditing = !!existing;
+            resetNoticeForm();
             renderNoticesAll();
-            e.target.reset();
-            showToast("Aviso publicado!");
+            showToast(wasEditing ? "Aviso atualizado!" : "Aviso publicado!");
+        }
+
+        window.startEditNotice = function(id) {
+            if (!requireRole('gestao')) return;
+            const n = window.appData.notices.find(x => x.id === id); if (!n) return;
+            editingNoticeId = id;
+            document.getElementById('noticeTitle').value = n.title || '';
+            document.getElementById('noticeBody').value = n.body || '';
+            const a = noticeAudiences(n);
+            document.querySelectorAll('.notice-aud').forEach(c => c.checked = a.includes(c.value));
+            syncNoticeAllBox();
+            document.getElementById('noticeFormTitle').innerText = 'Editar Aviso';
+            document.getElementById('noticeSubmitBtn').innerText = 'Salvar alterações';
+            document.getElementById('noticeCancelBtn').classList.remove('hidden');
+            document.getElementById('noticeTitle').focus();
+            document.getElementById('noticeTitle').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        window.deleteNotice = async function(id) {
+            if (!requireRole('gestao')) return;
+            const n = window.appData.notices.find(x => x.id === id); if (!n) return;
+            if (!confirm(`Deseja excluir o aviso "${n.title}"?`)) return;
+            try {
+                await deleteDoc(doc(db, "notices", id));
+                window.appData.notices = window.appData.notices.filter(x => x.id !== id);
+                if (editingNoticeId === id) resetNoticeForm();
+                renderNoticesAll();
+                showToast('Aviso excluído.');
+            } catch (err) { console.error(err); showToast('Não foi possível excluir o aviso. Verifique a conexão e as permissões do banco de dados.'); }
         }
 
         function renderNoticesAll() {
-            document.getElementById('gestaoCountAvisos').innerText = window.appData.notices.length;
-            document.getElementById('gestaoNoticesList').innerHTML = window.appData.notices.map(item => `
+            const notices = window.appData.notices || [];
+            document.getElementById('gestaoCountAvisos').innerText = notices.length;
+            // Mural da gestão: todos os avisos, com editar/excluir
+            document.getElementById('gestaoNoticesList').innerHTML = notices.map(item => `
                 <div class="p-3 bg-slate-50 rounded-xl border">
-                    <h4 class="font-bold text-xs">${item.title}</h4>
-                    <p class="text-xs text-slate-600">${item.body}</p>
+                    <div class="flex justify-between gap-2">
+                        <h4 class="font-bold text-xs">${escapeHTML(item.title)}</h4>
+                        <span class="shrink-0 text-xs"><button onclick="startEditNotice('${item.id}')" class="text-brand-700 font-semibold mr-2">Editar</button><button onclick="deleteNotice('${item.id}')" class="text-red-600">Excluir</button></span>
+                    </div>
+                    <p class="text-xs text-slate-600 whitespace-pre-line">${escapeHTML(item.body)}</p>
+                    <p class="text-[10px] text-slate-500 mt-1">Exibido para: <b>${escapeHTML(noticeAudienceLabel(item))}</b>${item.date ? ' · ' + escapeHTML(item.date) : ''}${item.updatedAt ? ' · editado em ' + escapeHTML(item.updatedAt) : ''}</p>
                 </div>
-            `).join('');
+            `).join('') || '<p class="text-xs text-slate-500">Nenhum aviso publicado.</p>';
+            // Mural dos demais perfis: apenas os avisos vinculados ao perfil logado
+            const targets = { professores: 'professorNoticesList', estudantes: 'studentNoticesList', responsaveis: 'parentNoticesList' };
+            const role = window.currentUser?.role;
+            Object.entries(targets).forEach(([r, elId]) => {
+                const el = document.getElementById(elId); if (!el) return;
+                const visible = role === r ? notices.filter(n => noticeAudiences(n).includes(r)) : [];
+                el.innerHTML = visible.map(item => `
+                    <div class="p-3 bg-slate-50 rounded-xl border">
+                        <h4 class="font-bold text-xs">${escapeHTML(item.title)}</h4>
+                        <p class="text-xs text-slate-600 whitespace-pre-line">${escapeHTML(item.body)}</p>
+                        <p class="text-[10px] text-slate-500 mt-1">${escapeHTML(item.updatedAt ? item.updatedAt + ' (editado)' : (item.date || ''))}</p>
+                    </div>
+                `).join('') || '<p class="text-xs text-slate-500">Nenhum aviso no momento.</p>';
+            });
+            lucide.createIcons();
         }
 
         function renderCurrentRoleView() {
@@ -709,8 +836,8 @@
             if (!window.currentUser) return;
             if (window.currentUser.role === 'gestao') { renderUsersList(); renderAcademicManagement(); }
             else if (window.currentUser.role === 'professores') {
-                fillTeacherAssignmentSelect('activityAssignment'); fillTeacherAssignmentSelect('attendanceAssignment'); renderGradeRoster(); renderTeacherActivities();
-                document.getElementById('gradesTableBody').innerHTML = window.appData.grades.map(g => `<tr><td class="p-3 font-bold">${escapeHTML(g.name||'')}</td><td class="p-3">${escapeHTML(g.activityTitle||g.subject||'')}</td><td class="p-3">${g.score ?? '—'}</td><td class="p-3">${g.maxScore ?? '—'}</td></tr>`).join('');
+                fillTeacherAssignmentSelect('activityAssignment'); fillTeacherAssignmentSelect('attendanceAssignment'); fillTeacherAssignmentSelect('attendanceViewAssignment'); renderAttendanceView(); renderGradeRoster(); renderTeacherActivities();
+                document.getElementById('gradesTableBody').innerHTML = teacherEnrolledGrades().map(g => `<tr><td class="p-3 font-bold">${escapeHTML(g.name||'')}</td><td class="p-3">${escapeHTML(g.activityTitle||g.subject||'')}</td><td class="p-3">${g.score ?? '—'}</td><td class="p-3">${g.maxScore ?? '—'}</td></tr>`).join('');
             } else if (window.currentUser.role === 'estudantes') {
                 document.getElementById('studentWelcomeHeading').innerText = `Boletim de ${window.currentUser.name}`;
                 const grades = window.appData.grades.filter(g => g.studentId === window.currentUser.id);
@@ -926,31 +1053,49 @@
             e.preventDefault(); if(!requireRole('professores'))return;
             const assignment=teacherAssignments().find(x=>x.id===document.getElementById('gradeAssignment').value);
             const activity=(window.appData.activities||[]).find(x=>x.id===document.getElementById('gradeActivity').value);
-            const studentId=document.getElementById('gradeStudent').value;
-            const score=Number(document.getElementById('gradeScore').value);
-            const student=window.appData.users.find(u=>u.id===studentId);
-            if(!assignment||!activity||activity.assignmentId!==assignment.id||!student||!Number.isFinite(score)||score<0||score>Number(activity.maxScore)) {showToast('Selecione a atividade da turma/disciplina e informe uma nota dentro do valor máximo.');return;}
-            const old=(window.appData.grades||[]).find(g=>g.studentId===studentId&&g.activityId===activity.id);
-            const item={id:old?.id||('g_'+studentId+'_'+activity.id),studentId,name:student.name,subject:assignment.subjectName,subjectId:assignment.subjectId,classId:assignment.classId,teacherId:window.currentUser.id,assignmentId:assignment.id,activityId:activity.id,activityTitle:activity.title,score,maxScore:Number(activity.maxScore),updatedAt:new Date().toISOString()};
-            try { await setDoc(doc(db,'grades',item.id),item); const i=window.appData.grades.findIndex(g=>g.id===item.id); if(i>=0)window.appData.grades[i]=item;else window.appData.grades.push(item); renderCurrentRoleView(); showToast('Nota vinculada à atividade salva com sucesso.'); }
-            catch(err){console.error(err);showToast('Erro ao salvar nota no Firebase.');}
+            if(!assignment||!activity||activity.assignmentId!==assignment.id){showToast('Selecione a turma/disciplina e a atividade avaliativa.');return;}
+            const items=[];
+            for(const input of document.querySelectorAll('#gradeEntryBody .grade-input')){
+                if(input.value.trim()==='')continue;
+                const studentId=input.dataset.student;
+                const score=Number(input.value.replace(',','.'));
+                const student=window.appData.users.find(u=>u.id===studentId);
+                if(!student||!Number.isFinite(score)||score<0||score>Number(activity.maxScore)){showToast(`Nota inválida${student?' para '+student.name:''}: informe um valor de 0 a ${activity.maxScore}.`);input.focus();return;}
+                const old=(window.appData.grades||[]).find(g=>g.studentId===studentId&&g.activityId===activity.id);
+                items.push({id:old?.id||('g_'+studentId+'_'+activity.id),studentId,name:student.name,subject:assignment.subjectName,subjectId:assignment.subjectId,classId:assignment.classId,teacherId:window.currentUser.id,assignmentId:assignment.id,activityId:activity.id,activityTitle:activity.title,score,maxScore:Number(activity.maxScore),updatedAt:new Date().toISOString()});
+            }
+            if(!items.length){showToast('Informe ao menos uma nota para salvar.');return;}
+            try {
+                await Promise.all(items.map(item=>setDoc(doc(db,'grades',item.id),item)));
+                items.forEach(item=>{const i=window.appData.grades.findIndex(g=>g.id===item.id); if(i>=0)window.appData.grades[i]=item;else window.appData.grades.push(item);});
+                renderCurrentRoleView();
+                showToast(`${items.length} nota(s) da atividade "${activity.title}" salva(s) com sucesso.`);
+            }
+            catch(err){console.error(err);showToast('Erro ao salvar notas no Firebase.');}
         };
         function renderGradeRoster() {
             fillTeacherAssignmentSelect('gradeAssignment');
-            const assignmentSelect=document.getElementById('gradeAssignment'), studentSelect=document.getElementById('gradeStudent'), activitySelect=document.getElementById('gradeActivity');
-            if(!studentSelect||!activitySelect)return;
+            const assignmentSelect=document.getElementById('gradeAssignment'), activitySelect=document.getElementById('gradeActivity'), entryBody=document.getElementById('gradeEntryBody');
+            if(!activitySelect||!entryBody)return;
             const assignment=teacherAssignments().find(x=>x.id===assignmentSelect.value);
-            const students=assignment?window.appData.users.filter(u=>u.role==='estudantes'&&(u.classId===assignment.classId||u.details===assignment.className||u.details?.startsWith(assignment.className+' -'))):[];
-            const oldStudent=studentSelect.value;
-            studentSelect.innerHTML='<option value="">Estudante</option>'+students.map(st=>`<option value="${st.id}">${escapeHTML(st.name)}</option>`).join('');
-            if(students.some(st=>st.id===oldStudent))studentSelect.value=oldStudent;
+            const students=assignment?window.appData.users.filter(u=>u.role==='estudantes'&&(u.classId===assignment.classId||u.details===assignment.className||u.details?.startsWith(assignment.className+' -'))).sort((x,y)=>String(x.name||'').localeCompare(String(y.name||''),'pt-BR')):[];
             const oldActivity=activitySelect.value;
             const activities=(window.appData.activities||[]).filter(a=>assignment&&a.assignmentId===assignment.id);
             activitySelect.innerHTML='<option value="">Selecione a atividade avaliativa</option>'+activities.map(a=>`<option value="${a.id}">${escapeHTML(a.title)} (máx. ${a.maxScore})</option>`).join('');
             if(activities.some(a=>a.id===oldActivity))activitySelect.value=oldActivity;
             const selected=activities.find(a=>a.id===activitySelect.value);
-            const scoreInput=document.getElementById('gradeScore'); if(scoreInput){scoreInput.max=selected?selected.maxScore:10;scoreInput.placeholder=selected?`Nota (0 a ${selected.maxScore})`:'Nota da atividade';}
             const hint=document.getElementById('gradeScoreHint');if(hint)hint.textContent=selected?`Atividade: ${selected.title} · Nota máxima: ${selected.maxScore}`:'Selecione a atividade cadastrada; a nota respeitará a pontuação máxima definida nela.';
+            const headScore=document.getElementById('gradeEntryHeadScore'); if(headScore)headScore.textContent=selected?`Nota (0 a ${selected.maxScore})`:'Nota';
+            // Preserva notas digitadas e ainda não salvas ao redesenhar a mesma atividade
+            const typed={}; if(entryBody.dataset.activity===(selected?.id||'')) entryBody.querySelectorAll('.grade-input').forEach(i=>{typed[i.dataset.student]=i.value;});
+            if(!assignment||!selected){entryBody.dataset.activity='';entryBody.innerHTML='<tr><td colspan="2" class="p-3 text-slate-500">Selecione a turma/disciplina e a atividade para lançar as notas.</td></tr>';return;}
+            if(!students.length){entryBody.dataset.activity='';entryBody.innerHTML='<tr><td colspan="2" class="p-3 text-amber-700">Não há estudantes vinculados a esta turma. A gestão deve cadastrar/matricular os estudantes na turma.</td></tr>';return;}
+            entryBody.dataset.activity=selected.id;
+            entryBody.innerHTML=students.map(st=>{
+                const saved=(window.appData.grades||[]).find(g=>g.studentId===st.id&&g.activityId===selected.id);
+                const value=(st.id in typed)?typed[st.id]:(saved?.score ?? '');
+                return `<tr><td class="p-3 font-bold">${escapeHTML(st.name)}</td><td class="p-3"><input type="number" class="grade-input w-full text-xs p-2 rounded-lg border" data-student="${st.id}" min="0" max="${selected.maxScore}" step="0.1" value="${escapeHTML(value)}" placeholder="—" aria-label="Nota de ${escapeHTML(st.name)}"></td></tr>`;
+            }).join('');
         }
         document.getElementById('gradeAssignment')?.addEventListener('change', renderGradeRoster);
         document.getElementById('gradeActivity')?.addEventListener('change', renderGradeRoster);
@@ -984,9 +1129,44 @@
             const assignment=teacherAssignments().find(a=>a.id===assignmentId); if(!assignment)return;
             const records=[...document.querySelectorAll('.attendance-status')].map(el=>({studentId:el.dataset.student,status:el.value}));
             const item={id:'att_'+assignmentId+'_'+date,assignmentId,teacherId:window.currentUser.id,classId:assignment.classId,subjectId:assignment.subjectId,className:assignment.className,subjectName:assignment.subjectName,date,records};
-            try{await saveCollectionItem('attendance',item);showToast('Frequência diária salva.');}
+            try{await saveCollectionItem('attendance',item);renderAttendanceView();showToast('Frequência diária salva.');}
             catch(err){console.error(err);showToast('Erro ao salvar frequência.');}
         };
+
+        function studentsOfAssignment(a) {
+            if(!a)return [];
+            return window.appData.users.filter(u=>u.role==='estudantes'&&(u.classId===a.classId||u.details===a.className||u.details?.startsWith(a.className+' -'))).sort((x,y)=>String(x.name||'').localeCompare(String(y.name||''),'pt-BR'));
+        }
+        // Notas exibidas ao professor: apenas de estudantes atualmente matriculados nas turmas/disciplinas dele
+        function teacherEnrolledGrades() {
+            const assignments=teacherAssignments();
+            return (window.appData.grades||[]).filter(g=>{
+                const a=assignments.find(x=>x.id===g.assignmentId);
+                return a && studentsOfAssignment(a).some(st=>st.id===g.studentId);
+            });
+        }
+        function renderAttendanceView() {
+            const select=document.getElementById('attendanceViewAssignment'), box=document.getElementById('attendanceViewContainer');
+            if(!select||!box)return;
+            const a=teacherAssignments().find(x=>x.id===select.value);
+            if(!a){box.innerHTML='<p class="text-xs text-slate-500">Selecione a turma e disciplina para visualizar a frequência.</p>';return;}
+            const students=studentsOfAssignment(a);
+            if(!students.length){box.innerHTML='<p class="text-amber-700 text-xs">Não há estudantes vinculados a esta turma.</p>';return;}
+            const days=(window.appData.attendance||[]).filter(x=>x.assignmentId===a.id).sort((x,y)=>String(x.date).localeCompare(String(y.date)));
+            if(!days.length){box.innerHTML='<p class="text-xs text-slate-500">Nenhuma frequência registrada para esta turma/disciplina.</p>';return;}
+            const fmt=d=>{const [y,m,dd]=String(d).split('-');return dd&&m?`${dd}/${m}`:escapeHTML(d);};
+            const badge={presente:'<span class="font-bold text-emerald-700">P</span>',falta:'<span class="font-bold text-red-600">F</span>',justificada:'<span class="font-bold text-amber-600">J</span>'};
+            const head=`<tr class="bg-slate-50 border-b"><th class="p-3 sticky left-0 bg-slate-50">Estudante</th>${days.map(d=>`<th class="p-2 text-center whitespace-nowrap" title="${escapeHTML(d.date)}">${fmt(d.date)}</th>`).join('')}<th class="p-3 text-center">Presenças</th><th class="p-3 text-center">Faltas</th><th class="p-3 text-center">Justif.</th><th class="p-3 text-center">Frequência</th></tr>`;
+            const rows=students.map(st=>{
+                let pres=0,fal=0,jus=0;
+                const cells=days.map(d=>{const r=d.records?.find(x=>x.studentId===st.id);if(r?.status==='presente')pres++;else if(r?.status==='falta')fal++;else if(r?.status==='justificada')jus++;return `<td class="p-2 text-center">${badge[r?.status]||'—'}</td>`;}).join('');
+                const total=pres+fal+jus, pct=total?Math.round(pres/total*100):null;
+                const color=pct===null?'':(pct<75?'text-red-600':'text-emerald-700');
+                return `<tr><td class="p-3 font-bold sticky left-0 bg-white">${escapeHTML(st.name)}</td>${cells}<td class="p-3 text-center">${pres}</td><td class="p-3 text-center">${fal}</td><td class="p-3 text-center">${jus}</td><td class="p-3 text-center font-bold ${color}">${pct===null?'—':pct+'%'}</td></tr>`;
+            }).join('');
+            box.innerHTML=`<table class="w-full text-left text-xs"><thead>${head}</thead><tbody class="divide-y">${rows}</tbody></table><p class="text-[11px] text-slate-500 mt-2">${days.length} aula(s) registrada(s). Frequência abaixo de 75% aparece em vermelho.</p>`;
+        }
+        document.getElementById('attendanceViewAssignment')?.addEventListener('change', renderAttendanceView);
 
         window.showToast = function(msg) {
             const toast = document.getElementById('toastNotification');
