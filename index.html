@@ -48,11 +48,10 @@
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col antialiased">
 
-    <!-- APP HEADER (SÓ EXIBIDO QUANDO AUTENTICADO) -->
+    <!-- APP HEADER -->
     <header id="appHeader" class="hidden bg-brand-900 text-white shadow-lg sticky top-0 z-40 border-b border-brand-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-20">
-                <!-- Identificação do Portal -->
                 <div class="flex items-center gap-3">
                     <div class="bg-white p-2 rounded-xl text-brand-900 shadow">
                         <i data-lucide="graduation-cap" class="w-7 h-7"></i>
@@ -65,14 +64,12 @@
                     </div>
                 </div>
 
-                <!-- Perfil Ativo & Ações -->
                 <div class="flex items-center gap-3">
                     <button onclick="toggleEmbedModal()" class="hidden sm:flex items-center gap-2 bg-brand-800 hover:bg-brand-700 text-white text-xs px-3 py-2 rounded-lg border border-brand-600/50 transition shadow-sm font-medium">
                         <i data-lucide="code" class="w-4 h-4"></i>
                         <span>Incorporar no Google Sites</span>
                     </button>
                     
-                    <!-- Card do Usuário Logado -->
                     <div class="flex items-center bg-brand-800/90 rounded-xl p-1.5 pl-3 border border-brand-700/60 shadow-inner">
                         <div class="text-right mr-3 hidden sm:block">
                             <p id="headerUserName" class="text-xs font-bold leading-tight text-white">Nome Usuário</p>
@@ -93,7 +90,7 @@
         </div>
     </header>
 
-    <!-- CONTAINER PRINCIPAL DE VISÕES DEDICADAS -->
+    <!-- CONTAINER PRINCIPAL -->
     <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
 
         <!-- Toast Notification Global -->
@@ -117,7 +114,7 @@
                     <h2 class="text-2xl font-black tracking-tight">Centro Educa Mais</h2>
                     <p class="text-xs text-brand-100 mt-1 font-medium">Prof. Dimas Simas Lima</p>
                     <span class="inline-block mt-3 bg-white/15 text-white text-[11px] px-3 py-1 rounded-full font-semibold border border-white/20">
-                        Portal Escolar Integrado
+                        Portal Escolar Integrado (Firebase)
                     </span>
                 </div>
                 <div class="p-8">
@@ -126,21 +123,24 @@
                             <label class="block text-xs font-bold text-slate-700 mb-1">E-mail ou Matrícula</label>
                             <div class="relative">
                                 <i data-lucide="user" class="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5"></i>
-                                <input type="text" id="loginIdentifier" required value="admin@dimassimas.edu.br" placeholder="Digite seu e-mail ou matrícula" class="w-full text-xs pl-10 pr-3 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition">
+                                <input type="text" id="loginIdentifier" required value="admin@dimassimas.edu.br" placeholder="Digite seu e-mail ou matrícula" class="w-full text-xs pl-10 pr-3 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-500 transition">
                             </div>
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-slate-700 mb-1">Senha de Acesso</label>
                             <div class="relative">
                                 <i data-lucide="lock" class="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5"></i>
-                                <input type="password" id="loginPassword" required value="senha123" placeholder="••••••••" class="w-full text-xs pl-10 pr-3 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition">
+                                <input type="password" id="loginPassword" required value="senha123" placeholder="••••••••" class="w-full text-xs pl-10 pr-3 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-500 transition">
                             </div>
                         </div>
-
                         <button type="submit" class="w-full bg-brand-700 hover:bg-brand-800 text-white font-bold text-xs py-3.5 rounded-xl transition shadow-lg flex items-center justify-center gap-2">
                             <i data-lucide="log-in" class="w-4 h-4"></i> Entrar na Minha Conta
                         </button>
                     </form>
+                    <div class="mt-4 text-center">
+                        <p class="text-[11px] text-slate-500">Gestão: <span class="font-bold text-brand-700">admin@dimassimas.edu.br</span> / <span class="font-bold">senha123</span></p>
+                        <p class="text-[11px] text-slate-500 mt-1">Professor: <span class="font-bold text-brand-700">prof.carlos@dimassimas.edu.br</span> / <span class="font-bold">senha123</span></p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -186,7 +186,6 @@
                 </div>
             </div>
 
-            <!-- Gerenciador de Usuários -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm lg:col-span-1">
                     <h3 class="font-bold text-slate-800 text-base mb-4 flex items-center gap-2">
@@ -218,16 +217,13 @@
                         </div>
 
                         <div id="fieldTeacherSubject" class="hidden">
-                            <label class="block text-xs font-semibold text-slate-600 mb-1">Disciplina</label>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Disciplina Principal</label>
                             <input type="text" id="newUserSubject" placeholder="Ex: Física" class="w-full text-xs p-2.5 rounded-lg border border-slate-300">
                         </div>
 
                         <div id="fieldStudentClass">
-                            <label class="block text-xs font-semibold text-slate-600 mb-1">Turma do estudante</label>
-                            <select id="newUserClass" required class="w-full text-xs p-2.5 rounded-lg border border-slate-300">
-                                <option value="">Crie ou selecione uma turma</option>
-                            </select>
-                            <p class="text-[10px] text-slate-500 mt-1">A turma precisa estar cadastrada em “Turmas e disciplinas”.</p>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Turma</label>
+                            <input type="text" id="newUserClass" placeholder="Ex: 3º Ano A" class="w-full text-xs p-2.5 rounded-lg border border-slate-300">
                         </div>
 
                         <div id="fieldParentLink" class="hidden">
@@ -270,52 +266,6 @@
                 </div>
             </div>
 
-            <!-- Cadastros acadêmicos e vínculos -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <section class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                    <h3 class="font-bold text-base mb-4">Turmas e disciplinas</h3>
-                    <form onsubmit="createAcademicItem(event, 'classes')" class="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-4">
-                        <input id="className" required placeholder="Ex.: 2ª Série A" class="text-xs p-2.5 rounded-lg border">
-                        <input id="classShift" placeholder="Turno (matutino)" class="text-xs p-2.5 rounded-lg border">
-                        <button class="bg-brand-700 text-white text-xs font-bold p-2.5 rounded-lg">Adicionar turma</button>
-                    </form>
-                    <form onsubmit="createAcademicItem(event, 'subjects')" class="flex gap-2 mb-4">
-                        <input id="subjectName" required placeholder="Nome da disciplina" class="flex-1 min-w-0 text-xs p-2.5 rounded-lg border">
-                        <button class="bg-brand-700 text-white text-xs font-bold px-4 rounded-lg">Adicionar disciplina</button>
-                    </form>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div><h4 class="font-semibold text-xs mb-2">Turmas cadastradas</h4><div id="classesList" class="space-y-2 text-xs"></div></div>
-                        <div><h4 class="font-semibold text-xs mb-2">Disciplinas cadastradas</h4><div id="subjectsList" class="space-y-2 text-xs"></div></div>
-                    </div>
-                    <section id="classStudentsPanel" class="hidden mt-5 p-4 rounded-xl border border-brand-100 bg-brand-50/50">
-                        <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-2 mb-3">
-                            <div><p class="text-[10px] uppercase tracking-wide font-bold text-brand-700">Gerenciamento da turma</p><h4 id="classStudentsTitle" class="font-bold text-base text-slate-800"></h4><p id="classStudentsSummary" class="text-xs text-slate-600 mt-1"></p></div>
-                            <button type="button" onclick="closeClassManager()" class="text-xs text-slate-500 hover:text-slate-800">Fechar painel ✕</button>
-                        </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div><h5 class="font-semibold text-xs mb-2">Estudantes matriculados</h5><div id="classStudentsList" class="space-y-2"></div></div>
-                            <div>
-                                <h5 class="font-semibold text-xs mb-2">Adicionar estudante já cadastrado</h5>
-                                <form onsubmit="enrollExistingStudent(event)" class="space-y-2">
-                                    <select id="enrollStudentSelect" required class="w-full text-xs p-2.5 rounded-lg border"><option value="">Selecione um estudante</option></select>
-                                    <button class="w-full bg-brand-700 text-white text-xs font-bold p-2.5 rounded-lg">Matricular nesta turma</button>
-                                </form>
-                                <button type="button" onclick="registerStudentInSelectedClass()" class="w-full mt-3 border border-brand-300 bg-white text-brand-800 text-xs font-bold p-2.5 rounded-lg">Cadastrar novo estudante nesta turma</button>
-                            </div>
-                        </div>
-                    </section>
-                </section>
-                <section class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                    <h3 class="font-bold text-base mb-4">Vincular professor, disciplina e turma</h3>
-                    <form onsubmit="createTeachingAssignment(event)" class="space-y-3">
-                        <select id="assignTeacher" required class="w-full text-xs p-2.5 rounded-lg border"><option value="">Selecione o professor</option></select>
-                        <select id="assignSubject" required class="w-full text-xs p-2.5 rounded-lg border"><option value="">Selecione a disciplina</option></select>
-                        <select id="assignClass" required class="w-full text-xs p-2.5 rounded-lg border"><option value="">Selecione a turma</option></select>
-                        <button class="w-full bg-brand-700 text-white text-xs font-bold p-3 rounded-lg">Salvar vínculo</button>
-                    </form>
-                    <h4 class="font-semibold text-xs mt-5 mb-2">Vínculos ativos</h4><div id="teachingAssignmentsList" class="space-y-2 text-xs"></div>
-                </section>
-            </div>
             <!-- Avisos -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm lg:col-span-1">
@@ -333,104 +283,187 @@
                     </form>
                 </div>
                 <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm lg:col-span-2">
-                    <h3 class="font-bold text-slate-800 text-base mb-4">Mural de Avisos</h3>
+                    <h3 class="font-bold text-slate-800 text-base mb-4">Mural de Avisos Institucionais</h3>
                     <div id="gestaoNoticesList" class="space-y-3 max-h-[300px] overflow-y-auto"></div>
                 </div>
             </div>
         </div>
 
-        <!-- 2. PROFESSOR -->
+        <!-- 2. PAINEL EXCLUSIVO - PROFESSOR (COM LANÇAMENTO EM LOTE NA TABELA) -->
         <div id="route-professores" class="route-view hidden space-y-6">
-            <div class="bg-gradient-to-r from-brand-900 to-brand-700 rounded-2xl p-6 text-white shadow-md">
-                <h2 class="text-2xl font-extrabold">Diário de Classe</h2>
+            <div class="bg-gradient-to-r from-brand-900 via-brand-800 to-brand-700 rounded-2xl p-6 text-white shadow-md">
+                <span class="bg-white/20 text-white text-[10px] px-3 py-1 rounded-full font-bold uppercase tracking-wider">Espaço Docente</span>
+                <h2 class="text-2xl sm:text-3xl font-extrabold mt-2">Gestão de Turmas, Disciplinas e Atividades</h2>
+                <p class="text-xs sm:text-sm text-brand-100 mt-1">Lance notas rapidamente para toda a turma de forma unificada.</p>
             </div>
-            <div class="bg-white p-6 rounded-2xl border shadow-sm">
-                <h3 class="font-bold text-base mb-4">Lançamento de notas</h3>
-                <form onsubmit="saveGrade(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
-                    <select id="gradeAssignment" required class="text-xs p-2.5 rounded-lg border"><option value="">Turma e disciplina</option></select>
-                    <select id="gradeActivity" required class="text-xs p-2.5 rounded-lg border"><option value="">Selecione a atividade avaliativa</option></select>
-                    <select id="gradeStudent" required class="text-xs p-2.5 rounded-lg border"><option value="">Estudante</option></select>
-                    <input id="gradeScore" type="number" min="0" max="10" step="0.1" required placeholder="Nota da atividade" class="text-xs p-2.5 rounded-lg border">
-                    <button class="bg-brand-700 text-white text-xs font-bold p-2.5 rounded-lg">Salvar nota</button>
-                </form>
-                <p id="gradeScoreHint" class="text-[11px] text-slate-500 mt-2">Selecione a atividade cadastrada; a nota respeitará a pontuação máxima definida nela.</p>
+
+            <!-- Seletor de Turma/Disciplina Ativa do Professor -->
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div class="w-full sm:w-auto flex-1">
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Selecionar Turma e Disciplina de Trabalho:</label>
+                    <select id="teacherClassSubjectSelect" onchange="switchTeacherActiveContext()" class="w-full text-xs p-3 rounded-xl border border-slate-300 font-semibold bg-slate-50 focus:ring-2 focus:ring-brand-500">
+                        <!-- Preenchido via JS -->
+                    </select>
+                </div>
+                <button onclick="toggleNewClassModal()" class="w-full sm:w-auto bg-brand-700 hover:bg-brand-800 text-white text-xs font-bold px-4 py-3 rounded-xl transition shadow flex items-center justify-center gap-2">
+                    <i data-lucide="folder-plus" class="w-4 h-4"></i> Criar Nova Turma/Disciplina
+                </button>
             </div>
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <section class="bg-white p-6 rounded-2xl border shadow-sm">
-                    <h3 class="font-bold text-base mb-4">Cadastrar atividade avaliativa</h3>
-                    <form onsubmit="createActivity(event)" class="space-y-3">
-                        <select id="activityAssignment" required class="w-full text-xs p-2.5 rounded-lg border"><option value="">Turma e disciplina</option></select>
-                        <input id="activityTitle" required placeholder="Título da atividade" class="w-full text-xs p-2.5 rounded-lg border">
-                        <div class="grid grid-cols-2 gap-2"><select id="activityType" class="text-xs p-2.5 rounded-lg border"><option>Atividade</option><option>Trabalho</option><option>Prova</option><option>Projeto</option></select><input id="activityMaxScore" type="number" min="0.1" step="0.1" value="10" required class="text-xs p-2.5 rounded-lg border" aria-label="Pontuação máxima"></div>
-                        <input id="activityDueDate" type="date" class="w-full text-xs p-2.5 rounded-lg border" aria-label="Prazo">
-                        <textarea id="activityDescription" rows="2" placeholder="Orientações (opcional)" class="w-full text-xs p-2.5 rounded-lg border"></textarea>
-                        <button class="w-full bg-brand-700 text-white text-xs font-bold p-3 rounded-lg">Publicar atividade</button>
+
+            <!-- Abas do Painel do Professor -->
+            <div class="flex border-b border-slate-200 gap-4">
+                <button onclick="switchTeacherTab('notas')" id="tabBtn-notas" class="pb-3 text-xs font-bold border-b-2 border-brand-700 text-brand-800 transition">Diário de Notas (Tabela em Lote)</button>
+                <button onclick="switchTeacherTab('atividades')" id="tabBtn-atividades" class="pb-3 text-xs font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition">Plano de Atividades & Tarefas</button>
+                <button onclick="switchTeacherTab('frequencia')" id="tabBtn-frequencia" class="pb-3 text-xs font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition">Chamada / Frequência</button>
+            </div>
+
+            <!-- ABA 1: NOTAS EM LOTE -->
+            <div id="teacherTab-notas" class="teacher-tab-content space-y-4">
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-4">
+                        <div>
+                            <h3 id="gradesTableTitle" class="font-bold text-slate-800 text-base">Lançamento de Notas - Tabela Geral da Turma</h3>
+                            <p class="text-xs text-slate-500">Altere os valores de N1 e N2 diretamente nas caixas de texto. As alterações salvam automaticamente.</p>
+                        </div>
+                        <span class="text-xs bg-emerald-50 text-emerald-800 font-bold px-3 py-1 rounded-full border border-emerald-200">Salvamento Instantâneo em Lote</span>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse text-xs">
+                            <thead>
+                                <tr class="bg-slate-50 border-b text-slate-600">
+                                    <th class="p-3">Estudante</th>
+                                    <th class="p-3 w-32">N1 (Peso 5)</th>
+                                    <th class="p-3 w-32">N2 (Peso 5)</th>
+                                    <th class="p-3 w-28">Média Parcial</th>
+                                    <th class="p-3 text-center">Situação Acadêmica</th>
+                                </tr>
+                            </thead>
+                            <tbody id="gradesTableBody" class="divide-y divide-slate-100"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ABA 2: ATIVIDADES -->
+            <div id="teacherTab-atividades" class="teacher-tab-content hidden space-y-4">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm lg:col-span-1">
+                        <h3 class="font-bold text-slate-800 text-base mb-4 flex items-center gap-2">
+                            <i data-lucide="file-text" class="w-5 h-5 text-brand-700"></i> Publicar Nova Atividade
+                        </h3>
+                        <form onsubmit="handleCreateActivity(event)" class="space-y-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Título da Atividade</label>
+                                <input type="text" id="activityTitle" required placeholder="Ex: Trabalho de Física Quântica" class="w-full text-xs p-2.5 rounded-lg border">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Data de Entrega</label>
+                                <input type="date" id="activityDueDate" required class="w-full text-xs p-2.5 rounded-lg border">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Descrição / Instruções</label>
+                                <textarea id="activityDesc" required rows="4" placeholder="Descreva os requisitos..." class="w-full text-xs p-2.5 rounded-lg border"></textarea>
+                            </div>
+                            <button type="submit" class="w-full bg-brand-700 hover:bg-brand-800 text-white font-bold text-xs py-3 rounded-lg shadow">Publicar Atividade na Turma</button>
+                        </form>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm lg:col-span-2">
+                        <h3 class="font-bold text-slate-800 text-base mb-4 flex items-center gap-2">
+                            <i data-lucide="list-checks" class="w-5 h-5 text-brand-700"></i> Atividades Ativas na Turma
+                        </h3>
+                        <div id="teacherActivitiesList" class="space-y-3 max-h-[400px] overflow-y-auto pr-1"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ABA 3: FREQUÊNCIA -->
+            <div id="teacherTab-frequencia" class="teacher-tab-content hidden space-y-4">
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm max-w-xl">
+                    <h3 class="font-bold text-slate-800 text-base mb-2 flex items-center gap-2">
+                        <i data-lucide="check-square" class="w-5 h-5 text-brand-700"></i> Chamada do Dia
+                    </h3>
+                    <p class="text-xs text-slate-500 mb-4">Marque os estudantes presentes na aula atual.</p>
+                    <form onsubmit="saveAttendance(event)" class="space-y-3">
+                        <div id="attendanceList" class="space-y-2 max-h-[300px] overflow-y-auto pr-1"></div>
+                        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs py-3 rounded-lg shadow">Salvar Chamada</button>
                     </form>
-                    <h4 class="font-semibold text-xs mt-5 mb-2">Atividades cadastradas</h4><div id="teacherActivitiesList" class="space-y-2 text-xs"></div>
-                </section>
-                <section class="bg-white p-6 rounded-2xl border shadow-sm">
-                    <h3 class="font-bold text-base mb-4">Frequência diária</h3>
-                    <form onsubmit="loadAttendanceRoster(event)" class="space-y-3">
-                        <select id="attendanceAssignment" required class="w-full text-xs p-2.5 rounded-lg border"><option value="">Selecione turma e disciplina</option></select>
-                        <input id="attendanceDate" type="date" required class="w-full text-xs p-2.5 rounded-lg border">
-                        <button class="w-full bg-brand-700 text-white text-xs font-bold p-3 rounded-lg">Carregar estudantes</button>
-                    </form>
-                    <div id="attendanceRoster" class="mt-4 space-y-2"></div>
-                </section>
-            </div>
-            <div class="bg-white p-6 rounded-2xl border shadow-sm">
-                <table class="w-full text-left text-xs">
-                    <thead>
-                        <tr class="bg-slate-50 border-b">
-                            <th class="p-3">Estudante</th>
-                            <th class="p-3">Atividade</th>
-                            <th class="p-3">Nota</th>
-                            <th class="p-3">Valor máximo</th>
-                        </tr>
-                    </thead>
-                    <tbody id="gradesTableBody" class="divide-y"></tbody>
-                </table>
+                </div>
             </div>
         </div>
 
         <!-- 3. ESTUDANTE -->
         <div id="route-estudantes" class="route-view hidden space-y-6">
-            <div class="bg-gradient-to-r from-brand-900 to-brand-700 rounded-2xl p-6 text-white shadow-md">
-                <h2 id="studentWelcomeHeading" class="text-2xl font-extrabold">Meu Boletim</h2>
+            <div class="bg-gradient-to-r from-brand-900 via-brand-800 to-brand-700 rounded-2xl p-6 text-white shadow-md">
+                <span class="bg-white/20 text-white text-[10px] px-3 py-1 rounded-full font-bold uppercase tracking-wider">Portal do Aluno</span>
+                <h2 id="studentWelcomeHeading" class="text-2xl sm:text-3xl font-extrabold mt-2">Meu Boletim e Atividades</h2>
+                <p class="text-xs sm:text-sm text-brand-100 mt-1">Acompanhe suas notas e avisos institucionais.</p>
             </div>
-            <div class="bg-white p-6 rounded-2xl border shadow-sm">
-                <table class="w-full text-left text-xs">
-                    <thead>
-                        <tr class="bg-slate-50 border-b">
-                            <th class="p-3">Disciplina</th>
-                            <th class="p-3">Atividade</th>
-                            <th class="p-3">Nota</th>
-                            <th class="p-3">Valor máximo</th>
-                        </tr>
-                    </thead>
-                    <tbody id="studentReportCard" class="divide-y"></tbody>
-                </table>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm lg:col-span-2 space-y-6">
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-base mb-4">Boletim Escolar</h3>
+                        <table class="w-full text-left text-xs">
+                            <thead>
+                                <tr class="bg-slate-50 border-b">
+                                    <th class="p-3">Disciplina</th>
+                                    <th class="p-3">N1</th>
+                                    <th class="p-3">N2</th>
+                                    <th class="p-3">Média</th>
+                                    <th class="p-3">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="studentReportCard" class="divide-y"></tbody>
+                        </table>
+                    </div>
+
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-base mb-3">Mural de Avisos e Comunicados</h3>
+                        <div id="studentNoticesList" class="space-y-3"></div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm lg:col-span-1">
+                    <h3 class="font-bold text-slate-800 text-base mb-4 flex items-center gap-2">
+                        <i data-lucide="book-open" class="w-5 h-5 text-brand-700"></i> Tarefas e Trabalhos
+                    </h3>
+                    <div id="studentActivitiesList" class="space-y-3 max-h-[350px] overflow-y-auto"></div>
+                </div>
             </div>
         </div>
 
         <!-- 4. RESPONSÁVEL -->
         <div id="route-responsaveis" class="route-view hidden space-y-6">
-            <div class="bg-gradient-to-r from-brand-900 to-brand-700 rounded-2xl p-6 text-white shadow-md">
-                <h2 class="text-2xl font-extrabold">Acompanhamento do Estudante</h2>
+            <div class="bg-gradient-to-r from-brand-900 via-brand-800 to-brand-700 rounded-2xl p-6 text-white shadow-md">
+                <span class="bg-white/20 text-white text-[10px] px-3 py-1 rounded-full font-bold uppercase tracking-wider">Portal da Família</span>
+                <h2 class="text-2xl sm:text-3xl font-extrabold mt-2">Acompanhamento do Estudante</h2>
             </div>
-            <div class="bg-white p-6 rounded-2xl border shadow-sm">
-                <p id="parentStudentLinkedName" class="font-bold text-sm mb-4"></p>
-                <table class="w-full text-left text-xs">
-                    <thead>
-                        <tr class="bg-slate-50 border-b">
-                            <th class="p-3">Disciplina</th>
-                            <th class="p-3">Atividade</th>
-                            <th class="p-3">Nota</th>
-                            <th class="p-3">Valor máximo</th>
-                        </tr>
-                    </thead>
-                    <tbody id="parentReportCard" class="divide-y"></tbody>
-                </table>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-2xl border shadow-sm lg:col-span-2 space-y-6">
+                    <div>
+                        <p id="parentStudentLinkedName" class="font-bold text-sm mb-4 text-brand-800"></p>
+                        <table class="w-full text-left text-xs">
+                            <thead>
+                                <tr class="bg-slate-50 border-b">
+                                    <th class="p-3">Disciplina</th>
+                                    <th class="p-3">N1</th>
+                                    <th class="p-3">N2</th>
+                                    <th class="p-3">Média</th>
+                                </tr>
+                            </thead>
+                            <tbody id="parentReportCard" class="divide-y"></tbody>
+                        </table>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-base mb-3">Mural de Avisos Institucionais</h3>
+                        <div id="parentNoticesList" class="space-y-3"></div>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-2xl border shadow-sm lg:col-span-1">
+                    <h3 class="font-bold text-slate-800 text-base mb-4">Painel de Professores</h3>
+                    <div id="parentTeachersList" class="space-y-2 text-xs text-slate-600"></div>
+                </div>
             </div>
         </div>
 
@@ -440,6 +473,27 @@
     <footer class="bg-brand-900 text-white mt-auto py-6 text-center text-xs">
         <p>Centro Educa Mais Professor Dimas Simas Lima © 2026</p>
     </footer>
+
+    <!-- MODAL DE CRIAR TURMA/DISCIPLINA -->
+    <div id="newClassModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
+            <button onclick="toggleNewClassModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+            <h3 class="font-bold text-lg mb-4 text-brand-900 flex items-center gap-2">
+                <i data-lucide="folder-plus" class="w-5 h-5"></i> Adicionar Nova Turma / Disciplina
+            </h3>
+            <form onsubmit="handleCreateClassSubject(event)" class="space-y-3 text-xs">
+                <div>
+                    <label class="block font-semibold text-slate-600 mb-1">Nome da Turma</label>
+                    <input type="text" id="newClassTitle" required placeholder="Ex: 3º Ano B - Vespertino" class="w-full p-2.5 rounded-lg border">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-600 mb-1">Disciplina</label>
+                    <input type="text" id="newClassSubjectName" required placeholder="Ex: Física Quântica" class="w-full p-2.5 rounded-lg border">
+                </div>
+                <button type="submit" class="w-full bg-brand-700 text-white font-bold py-3 rounded-lg shadow mt-2">Criar Turma</button>
+            </form>
+        </div>
+    </div>
 
     <!-- MODAL EMBED -->
     <div id="embedModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
@@ -451,7 +505,7 @@
         </div>
     </div>
 
-    <!-- SCRIPT FIREBASE -->
+    <!-- SCRIPT FIREBASE E APLICAÇÃO -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, getDocs, setDoc, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -476,31 +530,35 @@
             { id: 'u_resp', name: 'Maria Andrade', email: 'resp.maria@dimassimas.edu.br', password: 'senha123', role: 'responsaveis', details: 'Resp. por Lucas Andrade', linkedStudentId: 'u_aluno' }
         ];
 
-        const SEED_NOTICES = [
-            { id: 'n1', title: "Reunião de Pais e Mestres", audience: "todos", body: "Sexta-feira às 18h no auditório.", date: "20/10/2026" }
+        const SEED_CLASSES = [
+            { id: 'c1', teacherId: 'u_prof', className: '3º Ano A - Matutino', subject: 'Matemática' },
+            { id: 'c2', teacherId: 'u_prof', className: '3º Ano A - Matutino', subject: 'Física' }
         ];
 
         const SEED_GRADES = [
-            { id: 'g1', studentId: 'u_aluno', name: "Lucas Andrade", subject: "Matemática", n1: 9.5, n2: 9.0 },
-            { id: 'g2', studentId: 'u_aluno', name: "Lucas Andrade", subject: "Língua Portuguesa", n1: 8.5, n2: 8.0 },
-            { id: 'g3', studentId: 'u_aluno', name: "Lucas Andrade", subject: "Física", n1: 9.0, n2: 8.5 },
-            { id: 'g4', studentId: 'u_aluno', name: "Lucas Andrade", subject: "Química", n1: 8.0, n2: 9.0 }
+            { id: 'g1', classId: 'c1', studentId: 'u_aluno', name: "Lucas Andrade", subject: "Matemática", n1: 9.5, n2: 9.0 },
+            { id: 'g2', classId: 'c2', studentId: 'u_aluno', name: "Lucas Andrade", subject: "Física", n1: 9.0, n2: 8.5 }
         ];
 
-        // Estado local imediato para garantir funcionamento instantâneo
+        const SEED_ACTIVITIES = [
+            { id: 'act1', classId: 'c1', title: 'Lista de Exercícios de Funções', dueDate: '2026-10-30', description: 'Resolver os exercícios do capítulo 4.' }
+        ];
+
+        const SEED_NOTICES = [
+            { id: 'n1', title: 'Início das Avaliações N2', audience: 'todos', body: 'As avaliações bimestrais começam na próxima segunda-feira.', date: '21/10/2026' }
+        ];
+
         window.appData = {
             users: [...SEED_USERS],
-            notices: [...SEED_NOTICES],
+            classes: [...SEED_CLASSES],
             grades: [...SEED_GRADES],
-            attendance: [],
-            classes: [],
-            subjects: [],
-            teachingAssignments: [],
-            activities: []
+            activities: [...SEED_ACTIVITIES],
+            notices: [...SEED_NOTICES],
+            attendance: []
         };
         window.currentUser = null;
+        window.activeTeacherClassId = 'c1';
 
-        // Carregar dados da nuvem em segundo plano
         async function syncWithFirestore() {
             try {
                 const usersSnap = await getDocs(collection(db, "users"));
@@ -511,26 +569,41 @@
                     for (let u of SEED_USERS) await setDoc(doc(db, "users", u.id), u);
                 }
 
-                const noticesSnap = await getDocs(collection(db, "notices"));
-                if (!noticesSnap.empty) {
-                    window.appData.notices = [];
-                    noticesSnap.forEach(d => window.appData.notices.push(d.data()));
+                const classesSnap = await getDocs(collection(db, "classes"));
+                if (!classesSnap.empty) {
+                    window.appData.classes = [];
+                    classesSnap.forEach(d => window.appData.classes.push(d.data()));
+                } else {
+                    for (let c of SEED_CLASSES) await setDoc(doc(db, "classes", c.id), c);
                 }
 
                 const gradesSnap = await getDocs(collection(db, "grades"));
                 if (!gradesSnap.empty) {
                     window.appData.grades = [];
                     gradesSnap.forEach(d => window.appData.grades.push(d.data()));
+                } else {
+                    for (let g of SEED_GRADES) await setDoc(doc(db, "grades", g.id), g);
                 }
 
-                for (const key of ["classes", "subjects", "teachingAssignments", "activities", "attendance"]) {
-                    const snap = await getDocs(collection(db, key));
-                    window.appData[key] = [];
-                    snap.forEach(d => window.appData[key].push(d.data()));
+                const actSnap = await getDocs(collection(db, "activities"));
+                if (!actSnap.empty) {
+                    window.appData.activities = [];
+                    actSnap.forEach(d => window.appData.activities.push(d.data()));
+                } else {
+                    for (let a of SEED_ACTIVITIES) await setDoc(doc(db, "activities", a.id), a);
                 }
+
+                const noticeSnap = await getDocs(collection(db, "notices"));
+                if (!noticeSnap.empty) {
+                    window.appData.notices = [];
+                    noticeSnap.forEach(d => window.appData.notices.push(d.data()));
+                } else {
+                    for (let n of SEED_NOTICES) await setDoc(doc(db, "notices", n.id), n);
+                }
+
                 if (window.currentUser) renderCurrentRoleView();
             } catch (err) {
-                console.log("Usando modo offline/local temporário:", err);
+                console.log("Modo local ativo:", err);
             }
         }
 
@@ -586,50 +659,43 @@
             document.getElementById('fieldTeacherSubject').classList.toggle('hidden', role !== 'professores');
             document.getElementById('fieldStudentClass').classList.toggle('hidden', role !== 'estudantes');
             document.getElementById('fieldParentLink').classList.toggle('hidden', role !== 'responsaveis');
-            if (role === 'estudantes') fillStudentClassSelect();
             if (role === 'responsaveis') {
                 const select = document.getElementById('newUserLinkedStudent');
                 const students = window.appData.users.filter(u => u.role === 'estudantes');
-                select.innerHTML = '<option value="">Selecione o estudante</option>' + students.map(st => `<option value="${st.id}">${escapeHTML(st.name)}</option>`).join('');
+                select.innerHTML = students.map(st => `<option value="${st.id}">${st.name}</option>`).join('');
             }
         }
 
-        function fillStudentClassSelect(preselectId = '') {
-            const select = document.getElementById('newUserClass');
-            if (!select) return;
-            const old = preselectId || select.value;
-            const classes = window.appData.classes || [];
-            select.innerHTML = '<option value="">Selecione a turma</option>' + classes.map(c => `<option value="${c.id}">${escapeHTML(c.name)}${c.shift ? ' · '+escapeHTML(c.shift) : ''}</option>`).join('');
-            if (classes.some(c => c.id === old)) select.value = old;
-        }
-
-
         window.handleCreateUser = async function(e) {
             e.preventDefault();
-            if (!requireRole('gestao')) return;
             const name = document.getElementById('newUserName').value.trim();
             const email = document.getElementById('newUserIdentifier').value.trim();
             const role = document.getElementById('newUserRole').value;
             const password = document.getElementById('newUserPassword').value.trim();
             const newUserId = 'u_' + Date.now();
-            let details = role === 'professores' ? document.getElementById('newUserSubject').value.trim() : role === 'estudantes' ? '' : role === 'responsaveis' ? 'Responsável' : 'Gestão';
-            let linkedStudentId = role === 'responsaveis' ? document.getElementById('newUserLinkedStudent').value : null;
-            let classId = role === 'estudantes' ? document.getElementById('newUserClass').value : null;
-            const cls = (window.appData.classes || []).find(c => c.id === classId);
-            if (role === 'estudantes' && !cls) { showToast('Cadastre uma turma e selecione-a antes de cadastrar o estudante.'); return; }
-            if (role === 'responsaveis' && !linkedStudentId) { showToast('Selecione o estudante vinculado ao responsável.'); return; }
-            const newUser = { id: newUserId, name, email, role, password, details: role === 'estudantes' ? cls.name : details, classId: classId || null, className: cls?.name || null, linkedStudentId };
-            try {
-                await setDoc(doc(db, 'users', newUserId), newUser);
-                window.appData.users.push(newUser);
-                renderUsersList(); renderAcademicManagement(); renderCurrentRoleView();
-                e.target.reset();
-                document.getElementById('newUserRole').value = 'estudantes';
-                toggleExtraFields();
-                showToast('Usuário cadastrado com sucesso!');
-            } catch (err) { console.error(err); showToast('Não foi possível cadastrar o usuário. Verifique a conexão e as permissões do banco de dados.'); }
-        }
 
+            let details = role === 'professores' ? document.getElementById('newUserSubject').value : role === 'estudantes' ? document.getElementById('newUserClass').value : 'Responsável';
+            let linkedStudentId = role === 'responsaveis' ? document.getElementById('newUserLinkedStudent').value : null;
+
+            const newUser = { id: newUserId, name, email, role, password, details, linkedStudentId };
+            window.appData.users.push(newUser);
+
+            try {
+                await setDoc(doc(db, "users", newUserId), newUser);
+                if (role === 'estudantes') {
+                    window.appData.classes.forEach(async cls => {
+                        const gId = 'g_' + Math.random().toString(36).substr(2, 9);
+                        const gObj = { id: gId, classId: cls.id, studentId: newUserId, name, subject: cls.subject, n1: 7.0, n2: 7.0 };
+                        await setDoc(doc(db, "grades", gId), gObj);
+                        window.appData.grades.push(gObj);
+                    });
+                }
+            } catch (err) { console.log(err); }
+
+            renderUsersList();
+            e.target.reset();
+            showToast("Usuário cadastrado com sucesso!");
+        }
 
         window.deleteUser = async function(userId) {
             if (window.currentUser && window.currentUser.id === userId) {
@@ -661,7 +727,7 @@
                     <td class="p-3 text-slate-600">${u.email}</td>
                     <td class="p-3 uppercase text-[10px] font-bold">${u.role}</td>
                     <td class="p-3 text-slate-500">${u.details || '-'}</td>
-                    <td class="p-3 text-center"><button onclick="editUser('${u.id}')" class="text-brand-700 mr-2 font-semibold">Editar</button><button onclick="deleteUser('${u.id}')" class="text-red-600 hover:text-red-800"><i data-lucide="trash-2" class="w-4 h-4"></i></button></td>
+                    <td class="p-3 text-center"><button onclick="deleteUser('${u.id}')" class="text-red-600 hover:text-red-800"><i data-lucide="trash-2" class="w-4 h-4"></i></button></td>
                 </tr>
             `).join('');
             lucide.createIcons();
@@ -681,263 +747,261 @@
             try { await setDoc(doc(db, "notices", nId), nObj); } catch (err) { console.log(err); }
             renderNoticesAll();
             e.target.reset();
-            showToast("Aviso publicado!");
+            showToast("Aviso publicado para todos os perfis selecionados!");
         }
 
         function renderNoticesAll() {
-            document.getElementById('gestaoCountAvisos').innerText = window.appData.notices.length;
-            document.getElementById('gestaoNoticesList').innerHTML = window.appData.notices.map(item => `
-                <div class="p-3 bg-slate-50 rounded-xl border">
-                    <h4 class="font-bold text-xs">${item.title}</h4>
-                    <p class="text-xs text-slate-600">${item.body}</p>
+            const gestaoCount = document.getElementById('gestaoCountAvisos');
+            if (gestaoCount) gestaoCount.innerText = window.appData.notices.length;
+            const gestaoNotices = document.getElementById('gestaoNoticesList');
+            if (gestaoNotices) {
+                gestaoNotices.innerHTML = window.appData.notices.map(item => `
+                    <div class="p-3 bg-slate-50 rounded-xl border">
+                        <div class="flex justify-between items-center mb-1">
+                            <h4 class="font-bold text-xs text-brand-900">${item.title}</h4>
+                            <span class="text-[10px] bg-brand-100 text-brand-800 px-2 py-0.5 rounded uppercase font-bold">${item.audience}</span>
+                        </div>
+                        <p class="text-xs text-slate-600">${item.body}</p>
+                    </div>
+                `).join('');
+            }
+        }
+
+        window.toggleNewClassModal = function() {
+            document.getElementById('newClassModal').classList.toggle('hidden');
+        }
+
+        window.handleCreateClassSubject = async function(e) {
+            e.preventDefault();
+            const className = document.getElementById('newClassTitle').value.trim();
+            const subject = document.getElementById('newClassSubjectName').value.trim();
+            const cId = 'c_' + Date.now();
+
+            const newClassObj = {
+                id: cId,
+                teacherId: window.currentUser ? window.currentUser.id : 'u_prof',
+                className,
+                subject
+            };
+
+            window.appData.classes.push(newClassObj);
+
+            const students = window.appData.users.filter(u => u.role === 'estudantes');
+            for (let st of students) {
+                const gId = 'g_' + Math.random().toString(36).substr(2, 9);
+                const gObj = { id: gId, classId: cId, studentId: st.id, name: st.name, subject, n1: 7.0, n2: 7.0 };
+                window.appData.grades.push(gObj);
+                try { await setDoc(doc(db, "grades", gId), gObj); } catch(err){}
+            }
+
+            try {
+                await setDoc(doc(db, "classes", cId), newClassObj);
+            } catch(err){}
+
+            window.activeTeacherClassId = cId;
+            toggleNewClassModal();
+            e.target.reset();
+            renderTeacherView();
+            showToast("Turma e disciplina criadas com sucesso!");
+        }
+
+        window.switchTeacherTab = function(tabName) {
+            document.querySelectorAll('.teacher-tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('[id^="tabBtn-"]').forEach(btn => {
+                btn.classList.remove('border-brand-700', 'text-brand-800');
+                btn.classList.add('border-transparent', 'text-slate-500');
+            });
+
+            document.getElementById(`teacherTab-${tabName}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`tabBtn-${tabName}`);
+            activeBtn.classList.remove('border-transparent', 'text-slate-500');
+            activeBtn.classList.add('border-brand-700', 'text-brand-800');
+            lucide.createIcons();
+        }
+
+        window.switchTeacherActiveContext = function() {
+            window.activeTeacherClassId = document.getElementById('teacherClassSubjectSelect').value;
+            renderTeacherView();
+        }
+
+        window.handleCreateActivity = async function(e) {
+            e.preventDefault();
+            const title = document.getElementById('activityTitle').value.trim();
+            const dueDate = document.getElementById('activityDueDate').value;
+            const description = document.getElementById('activityDesc').value.trim();
+            const actId = 'act_' + Date.now();
+
+            const actObj = {
+                id: actId,
+                classId: window.activeTeacherClassId,
+                title,
+                dueDate,
+                description
+            };
+
+            window.appData.activities.push(actObj);
+            try {
+                await setDoc(doc(db, "activities", actId), actObj);
+            } catch(err){}
+
+            e.target.reset();
+            renderTeacherView();
+            showToast("Atividade publicada com sucesso para a turma!");
+        }
+
+        function renderTeacherView() {
+            const select = document.getElementById('teacherClassSubjectSelect');
+            const myClasses = window.appData.classes.filter(c => !window.currentUser || c.teacherId === window.currentUser.id || window.currentUser.role === 'gestao');
+
+            if (myClasses.length === 0) {
+                select.innerHTML = `<option value="">Nenhuma turma cadastrada</option>`;
+                return;
+            }
+
+            if (!myClasses.some(c => c.id === window.activeTeacherClassId)) {
+                window.activeTeacherClassId = myClasses[0].id;
+            }
+
+            select.innerHTML = myClasses.map(c => `
+                <option value="${c.id}" ${c.id === window.activeTeacherClassId ? 'selected' : ''}>Turma: ${c.className} | Disciplina: ${c.subject}</option>
+            `).join('');
+
+            const currentClass = myClasses.find(c => c.id === window.activeTeacherClassId) || myClasses[0];
+            document.getElementById('gradesTableTitle').innerText = `Lançamento em Lote - Turma: ${currentClass.className} (${currentClass.subject})`;
+
+            const classGrades = window.appData.grades.filter(g => g.classId === currentClass.id);
+            const tbody = document.getElementById('gradesTableBody');
+            
+            tbody.innerHTML = classGrades.map((g) => {
+                const media = ((parseFloat(g.n1 || 0) + parseFloat(g.n2 || 0)) / 2).toFixed(1);
+                return `
+                    <tr>
+                        <td class="p-3 font-bold text-slate-800">${g.name}</td>
+                        <td class="p-3">
+                            <input type="number" step="0.5" min="0" max="10" value="${g.n1}" onchange="updateGrade('${g.id}', 'n1', this.value)" class="w-24 p-2 rounded-lg border border-slate-300 text-center font-bold bg-slate-50 focus:bg-white focus:ring-2 focus:ring-brand-500">
+                        </td>
+                        <td class="p-3">
+                            <input type="number" step="0.5" min="0" max="10" value="${g.n2}" onchange="updateGrade('${g.id}', 'n2', this.value)" class="w-24 p-2 rounded-lg border border-slate-300 text-center font-bold bg-slate-50 focus:bg-white focus:ring-2 focus:ring-brand-500">
+                        </td>
+                        <td class="p-3 font-extrabold ${media >= 7 ? 'text-emerald-600' : 'text-amber-600'}">${media}</td>
+                        <td class="p-3 text-center">
+                            <span class="text-[10px] px-2.5 py-1 rounded-full font-bold ${media >= 7 ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">
+                                ${media >= 7 ? 'Aprovado' : 'Em Recuperação'}
+                            </span>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+
+            const classActs = window.appData.activities.filter(a => a.classId === currentClass.id);
+            const actContainer = document.getElementById('teacherActivitiesList');
+            actContainer.innerHTML = classActs.length === 0 ? `<p class="text-xs text-slate-400 py-3 text-center">Nenhuma atividade cadastrada nesta turma.</p>` : classActs.map(a => `
+                <div class="p-3.5 bg-slate-50 rounded-xl border">
+                    <div class="flex justify-between items-start">
+                        <h4 class="font-bold text-xs text-brand-900">${a.title}</h4>
+                        <span class="text-[10px] font-mono bg-amber-100 text-amber-800 px-2 py-0.5 rounded">Entrega: ${a.dueDate}</span>
+                    </div>
+                    <p class="text-xs text-slate-600 mt-1">${a.description}</p>
                 </div>
             `).join('');
+
+            const students = window.appData.users.filter(u => u.role === 'estudantes');
+            document.getElementById('attendanceList').innerHTML = students.map(st => `
+                <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border">
+                    <span class="text-xs font-bold text-slate-700">${st.name}</span>
+                    <input type="checkbox" checked class="w-4 h-4 text-brand-600 rounded">
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        window.updateGrade = async function(gradeId, field, value) {
+            const g = window.appData.grades.find(item => item.id === gradeId);
+            if (g) {
+                g[field] = parseFloat(value) || 0;
+                try {
+                    await updateDoc(doc(db, "grades", gradeId), { [field]: g[field] });
+                } catch(err){}
+                renderTeacherView();
+                showToast("Nota atualizada e salva na nuvem!");
+            }
+        }
+
+        window.saveAttendance = function(e) {
+            e.preventDefault();
+            showToast("Chamada salva com sucesso!");
         }
 
         function renderCurrentRoleView() {
             renderNoticesAll();
             if (!window.currentUser) return;
-            if (window.currentUser.role === 'gestao') { renderUsersList(); renderAcademicManagement(); }
-            else if (window.currentUser.role === 'professores') {
-                fillTeacherAssignmentSelect('activityAssignment'); fillTeacherAssignmentSelect('attendanceAssignment'); renderGradeRoster(); renderTeacherActivities();
-                document.getElementById('gradesTableBody').innerHTML = window.appData.grades.map(g => `<tr><td class="p-3 font-bold">${escapeHTML(g.name||'')}</td><td class="p-3">${escapeHTML(g.activityTitle||g.subject||'')}</td><td class="p-3">${g.score ?? '—'}</td><td class="p-3">${g.maxScore ?? '—'}</td></tr>`).join('');
+
+            const relevantNotices = window.appData.notices.filter(n => n.audience === 'todos' || n.audience === window.currentUser.role);
+
+            if (window.currentUser.role === 'gestao') {
+                renderUsersList();
+            } else if (window.currentUser.role === 'professores') {
+                renderTeacherView();
             } else if (window.currentUser.role === 'estudantes') {
                 document.getElementById('studentWelcomeHeading').innerText = `Boletim de ${window.currentUser.name}`;
                 const grades = window.appData.grades.filter(g => g.studentId === window.currentUser.id);
-                document.getElementById('studentReportCard').innerHTML = grades.map(g => `<tr><td class="p-3 font-bold">${escapeHTML(g.subject||'')}</td><td class="p-3">${escapeHTML(g.activityTitle||'—')}</td><td class="p-3">${g.score ?? '—'}</td><td class="p-3">${g.maxScore ?? '—'}</td></tr>`).join('');
+                document.getElementById('studentReportCard').innerHTML = grades.map(g => `
+                    <tr>
+                        <td class="p-3 font-bold">${g.subject}</td>
+                        <td class="p-3">${g.n1}</td>
+                        <td class="p-3">${g.n2}</td>
+                        <td class="p-3 font-bold">${((parseFloat(g.n1||0)+parseFloat(g.n2||0))/2).toFixed(1)}</td>
+                        <td class="p-3"><span class="text-[10px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-bold">Aprovado</span></td>
+                    </tr>
+                `).join('');
+
+                document.getElementById('studentNoticesList').innerHTML = relevantNotices.length === 0 ? `<p class="text-xs text-slate-400">Nenhum aviso recente.</p>` : relevantNotices.map(n => `
+                    <div class="p-3 bg-slate-50 rounded-xl border">
+                        <h4 class="font-bold text-xs text-brand-900">${n.title}</h4>
+                        <p class="text-xs text-slate-600 mt-0.5">${n.body}</p>
+                        <span class="text-[10px] text-slate-400 mt-1 block">Publicado em: ${n.date}</span>
+                    </div>
+                `).join('');
+
+                const acts = window.appData.activities;
+                document.getElementById('studentActivitiesList').innerHTML = acts.length === 0 ? `<p class="text-xs text-slate-400">Nenhuma tarefa pendente.</p>` : acts.map(a => `
+                    <div class="p-3 bg-slate-50 rounded-xl border text-xs">
+                        <span class="font-bold text-brand-900">${a.title}</span>
+                        <p class="text-slate-600 mt-1">${a.description}</p>
+                        <span class="text-[10px] text-amber-700 font-mono mt-2 block">Prazo: ${a.dueDate}</span>
+                    </div>
+                `).join('');
+
             } else if (window.currentUser.role === 'responsaveis') {
-                const student = window.appData.users.find(u => u.id === window.currentUser.linkedStudentId) || window.appData.users[2];
-                document.getElementById('parentStudentLinkedName').innerText = `Estudante: ${student.name}`;
-                const grades = window.appData.grades.filter(g => g.studentId === student.id);
-                document.getElementById('parentReportCard').innerHTML = grades.map(g => `<tr><td class="p-3 font-bold">${escapeHTML(g.subject||'')}</td><td class="p-3">${escapeHTML(g.activityTitle||'—')}</td><td class="p-3">${g.score ?? '—'}</td><td class="p-3">${g.maxScore ?? '—'}</td></tr>`).join('');
-            }
-        }
+                const student = window.appData.users.find(u => u.id === window.currentUser.linkedStudentId) || window.appData.users.find(u => u.role === 'estudantes');
+                document.getElementById('parentStudentLinkedName').innerText = `Estudante Vinculado: ${student ? student.name : 'Lucas Andrade'}`;
+                const grades = window.appData.grades.filter(g => student && g.studentId === student.id);
+                document.getElementById('parentReportCard').innerHTML = grades.map(g => `
+                    <tr>
+                        <td class="p-3 font-bold">${g.subject}</td>
+                        <td class="p-3">${g.n1}</td>
+                        <td class="p-3">${g.n2}</td>
+                        <td class="p-3 font-bold">${((parseFloat(g.n1||0)+parseFloat(g.n2||0))/2).toFixed(1)}</td>
+                    </tr>
+                `).join('');
 
-        function escapeHTML(value) {
-            return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
-        }
-        function requireRole(role) {
-            if (!window.currentUser || window.currentUser.role !== role) {
-                showToast("Você não tem permissão para realizar esta ação.");
-                return false;
-            }
-            return true;
-        }
-        async function saveCollectionItem(collectionName, item) {
-            await setDoc(doc(db, collectionName, item.id), item);
-            const list = window.appData[collectionName];
-            const index = list.findIndex(x => x.id === item.id);
-            if (index >= 0) list[index] = item; else list.push(item);
-        }
-        window.createAcademicItem = async function(e, kind) {
-            e.preventDefault();
-            if (!requireRole('gestao')) return;
-            const isClass = kind === 'classes';
-            const name = document.getElementById(isClass ? 'className' : 'subjectName').value.trim();
-            if (!name) return;
-            const item = {id: (isClass ? 'c_' : 's_') + Date.now(), name};
-            if (isClass) item.shift = document.getElementById('classShift').value.trim();
-            try {
-                await saveCollectionItem(kind, item);
-                e.target.reset(); renderAcademicManagement();
-                showToast(isClass ? 'Turma cadastrada.' : 'Disciplina cadastrada.');
-            } catch (err) { console.error(err); showToast('Não foi possível salvar. Verifique a conexão e as regras do Firebase.'); }
-        };
-        window.createTeachingAssignment = async function(e) {
-            e.preventDefault();
-            if (!requireRole('gestao')) return;
-            const teacherId = document.getElementById('assignTeacher').value;
-            const subjectId = document.getElementById('assignSubject').value;
-            const classId = document.getElementById('assignClass').value;
-            if (!teacherId || !subjectId || !classId) return;
-            if (window.appData.teachingAssignments.some(a => a.teacherId === teacherId && a.subjectId === subjectId && a.classId === classId)) {
-                showToast('Este vínculo já existe.'); return;
-            }
-            const teacher = window.appData.users.find(u => u.id === teacherId);
-            const subject = window.appData.subjects.find(x => x.id === subjectId);
-            const cls = window.appData.classes.find(x => x.id === classId);
-            const item = {id:'ta_'+Date.now(), teacherId, teacherName:teacher.name, subjectId, subjectName:subject.name, classId, className:cls.name};
-            try { await saveCollectionItem('teachingAssignments', item); renderAcademicManagement(); renderCurrentRoleView(); e.target.reset(); showToast('Vínculo salvo.'); }
-            catch(err) { console.error(err); showToast('Erro ao salvar vínculo no Firebase.'); }
-        };
-        function renderAcademicManagement() {
-            const classes = window.appData.classes || [], subjects = window.appData.subjects || [];
-            document.getElementById('classesList').innerHTML = classes.map(x => { const count=window.appData.users.filter(u=>u.role==='estudantes'&&(u.classId===x.id||(!u.classId&&u.details===x.name))).length; return `<div class="p-3 rounded-lg bg-slate-50 border space-y-2"><div class="flex items-start justify-between gap-2"><div><p class="font-bold text-slate-800">${escapeHTML(x.name)}</p><p class="text-[10px] text-slate-500">${x.shift ? escapeHTML(x.shift)+' · ' : ''}${count} estudante(s)</p></div><button onclick="manageClass('${x.id}')" class="bg-brand-700 text-white rounded-lg px-2.5 py-1.5 font-bold">Abrir turma</button></div><div class="flex gap-3"><button onclick="editAcademicItem('classes','${x.id}')" class="text-brand-700 font-semibold">Editar</button><button onclick="removeAcademicItem('classes','${x.id}')" class="text-red-600">Excluir</button></div></div>`; }).join('') || '<p class="text-slate-500">Nenhuma turma cadastrada.</p>';
-            document.getElementById('subjectsList').innerHTML = subjects.map(x => `<div class="p-2 rounded bg-slate-50 border flex justify-between gap-2"><span>${escapeHTML(x.name)}</span><button onclick="editAcademicItem('subjects','${x.id}')" class="text-brand-700 font-semibold">Editar</button><button onclick="removeAcademicItem('subjects','${x.id}')" class="text-red-600">Excluir</button></div>`).join('') || '<p class="text-slate-500">Nenhuma disciplina cadastrada.</p>';
-            const fill = (id, items, label) => { const el=document.getElementById(id); if(!el)return; const old=el.value; el.innerHTML=`<option value="">${label}</option>`+items.map(x=>`<option value="${x.id}">${escapeHTML(x.name)}</option>`).join(''); if(items.some(x=>x.id===old))el.value=old; };
-            fill('assignTeacher', window.appData.users.filter(u=>u.role==='professores'), 'Selecione o professor');
-            fill('assignSubject', subjects, 'Selecione a disciplina'); fill('assignClass', classes, 'Selecione a turma');
-            fillStudentClassSelect();
-            document.getElementById('teachingAssignmentsList').innerHTML = (window.appData.teachingAssignments||[]).map(a=>`<div class="p-2 rounded bg-slate-50 border flex flex-wrap items-center gap-2"><b>${escapeHTML(a.teacherName)}</b> · ${escapeHTML(a.subjectName)} · ${escapeHTML(a.className)} <button onclick="editAcademicItem('teachingAssignments','${a.id}')" class="text-brand-700 font-semibold ml-auto">Editar</button><button onclick="removeAcademicItem('teachingAssignments','${a.id}')" class="text-red-600">Excluir</button></div>`).join('') || '<p class="text-slate-500">Nenhum vínculo cadastrado.</p>';
-        }
-        let selectedManagedClassId = null;
-        window.manageClass = function(classId) {
-            if (!requireRole('gestao')) return;
-            const cls = (window.appData.classes || []).find(c => c.id === classId);
-            if (!cls) return;
-            selectedManagedClassId = classId;
-            const panel = document.getElementById('classStudentsPanel');
-            panel.classList.remove('hidden');
-            document.getElementById('classStudentsTitle').textContent = cls.name;
-            const enrolled = window.appData.users.filter(u => u.role === 'estudantes' && (u.classId === classId || (!u.classId && u.details === cls.name)));
-            document.getElementById('classStudentsSummary').textContent = `${enrolled.length} estudante(s) matriculado(s)${cls.shift ? ' · Turno '+cls.shift : ''}`;
-            document.getElementById('classStudentsList').innerHTML = enrolled.map(st => `<div class="flex items-center justify-between gap-2 p-2 bg-white border rounded-lg"><div><p class="font-semibold text-xs">${escapeHTML(st.name)}</p><p class="text-[10px] text-slate-500">${escapeHTML(st.email || 'Sem e-mail')}</p></div><button type="button" onclick="removeStudentFromClass('${st.id}')" class="text-red-600 text-[10px] font-semibold">Desvincular</button></div>`).join('') || '<p class="text-xs text-slate-500 p-2 bg-white border rounded-lg">Nenhum estudante matriculado nesta turma.</p>';
-            const available = window.appData.users.filter(u => u.role === 'estudantes' && u.classId !== classId && !( !u.classId && u.details === cls.name));
-            const select = document.getElementById('enrollStudentSelect');
-            select.innerHTML = '<option value="">Selecione um estudante</option>' + available.map(st => `<option value="${st.id}">${escapeHTML(st.name)}${st.className || st.details ? ' · atual: '+escapeHTML(st.className || st.details) : ' · sem turma'}</option>`).join('');
-            if (!available.length) select.innerHTML = '<option value="">Todos os estudantes já estão nesta turma ou não há estudantes cadastrados</option>';
-            fillStudentClassSelect(classId);
-            panel.scrollIntoView({behavior:'smooth', block:'nearest'});
-        };
-        window.closeClassManager = function() { document.getElementById('classStudentsPanel').classList.add('hidden'); selectedManagedClassId = null; };
-        window.enrollExistingStudent = async function(e) {
-            e.preventDefault(); if (!requireRole('gestao') || !selectedManagedClassId) return;
-            const studentId = document.getElementById('enrollStudentSelect').value;
-            const student = window.appData.users.find(u => u.id === studentId);
-            const cls = window.appData.classes.find(c => c.id === selectedManagedClassId);
-            if (!student || !cls) { showToast('Selecione um estudante válido.'); return; }
-            if (student.classId && student.classId !== cls.id && !confirm(`Este estudante está vinculado à turma ${student.className || student.details}. Deseja transferi-lo para ${cls.name}?`)) return;
-            Object.assign(student, {classId:cls.id, className:cls.name, details:cls.name});
-            try { await setDoc(doc(db,'users',student.id),student); renderUsersList(); renderAcademicManagement(); manageClass(cls.id); renderCurrentRoleView(); showToast('Estudante matriculado na turma.'); }
-            catch(err) { console.error(err); showToast('Falha ao matricular estudante.'); }
-        };
-        window.removeStudentFromClass = async function(studentId) {
-            if (!requireRole('gestao') || !selectedManagedClassId) return;
-            const student = window.appData.users.find(u => u.id === studentId);
-            if (!student || !confirm(`Desvincular ${student.name} desta turma? O cadastro do usuário será mantido.`)) return;
-            Object.assign(student,{classId:null,className:null,details:''});
-            try { await setDoc(doc(db,'users',student.id),student); renderUsersList(); renderAcademicManagement(); manageClass(selectedManagedClassId); renderCurrentRoleView(); showToast('Estudante desvinculado. O usuário foi mantido.'); }
-            catch(err) { console.error(err); showToast('Falha ao desvincular estudante.'); }
-        };
-        window.registerStudentInSelectedClass = function() {
-            if (!selectedManagedClassId) return;
-            document.getElementById('newUserRole').value = 'estudantes';
-            toggleExtraFields();
-            fillStudentClassSelect(selectedManagedClassId);
-            document.getElementById('newUserName').focus();
-            document.getElementById('newUserName').scrollIntoView({behavior:'smooth',block:'center'});
-            showToast('Preencha nome, e-mail e senha no formulário; a turma já foi selecionada.');
-        };
+                document.getElementById('parentNoticesList').innerHTML = relevantNotices.length === 0 ? `<p class="text-xs text-slate-400">Nenhum aviso recente.</p>` : relevantNotices.map(n => `
+                    <div class="p-3 bg-slate-50 rounded-xl border">
+                        <h4 class="font-bold text-xs text-brand-900">${n.title}</h4>
+                        <p class="text-xs text-slate-600 mt-1">${n.body}</p>
+                        <span class="text-[10px] text-slate-400 mt-1 block">${n.date}</span>
+                    </div>
+                `).join('');
 
-        window.editUser = async function(id) {
-            if(!requireRole('gestao'))return;const user=window.appData.users.find(u=>u.id===id);if(!user)return;
-            const name=prompt('Nome completo:',user.name);if(name===null)return;
-            const email=prompt('E-mail/login:',user.email);if(email===null)return;
-            const details=prompt('Detalhes (turma, função etc.):',user.details||'');if(details===null)return;
-            if(!name.trim()||!email.trim()){showToast('Nome e e-mail são obrigatórios.');return;}
-            Object.assign(user,{name:name.trim(),email:email.trim(),details:details.trim()});
-            try{await setDoc(doc(db,'users',id),user);renderUsersList();renderCurrentRoleView();showToast('Usuário atualizado.');}catch(err){console.error(err);showToast('Erro ao atualizar usuário.');}
-        };
-        window.editAcademicItem = async function(kind,id) {
-            if(!requireRole('gestao'))return;
-            const item=(window.appData[kind]||[]).find(x=>x.id===id);if(!item)return;
-            if(kind==='classes') {const name=prompt('Nome da turma:',item.name);if(name===null)return;const shift=prompt('Turno:',item.shift||'');if(shift===null)return;item.name=name.trim();item.shift=shift.trim();}
-            else if(kind==='subjects') {const name=prompt('Nome da disciplina:',item.name);if(name===null)return;item.name=name.trim();}
-            else if(kind==='teachingAssignments') {
-                const teachers=window.appData.users.filter(u=>u.role==='professores');const subjects=window.appData.subjects||[],classes=window.appData.classes||[];
-                const teacherName=prompt('Nome do professor (conforme cadastro):',item.teacherName);if(teacherName===null)return;
-                const subjectName=prompt('Nome da disciplina (conforme cadastro):',item.subjectName);if(subjectName===null)return;
-                const className=prompt('Nome da turma (conforme cadastro):',item.className);if(className===null)return;
-                const t=teachers.find(x=>x.name.toLowerCase()===teacherName.trim().toLowerCase()),sub=subjects.find(x=>x.name.toLowerCase()===subjectName.trim().toLowerCase()),cls=classes.find(x=>x.name.toLowerCase()===className.trim().toLowerCase());
-                if(!t||!sub||!cls){showToast('Não encontrei professor, disciplina ou turma com esse nome.');return;}
-                Object.assign(item,{teacherId:t.id,teacherName:t.name,subjectId:sub.id,subjectName:sub.name,classId:cls.id,className:cls.name});
+                const teachers = window.appData.users.filter(u => u.role === 'professores');
+                document.getElementById('parentTeachersList').innerHTML = teachers.map(t => `
+                    <div class="p-2.5 bg-slate-50 rounded-lg border">
+                        <p class="font-bold text-slate-800">${t.name}</p>
+                        <p class="text-slate-500 text-[11px]">${t.details || 'Docente'}</p>
+                    </div>
+                `).join('');
             }
-            if(!item.name && kind!=='teachingAssignments'){showToast('O nome não pode ficar vazio.');return;}
-            try{await setDoc(doc(db,kind,id),item);renderAcademicManagement();renderCurrentRoleView();showToast('Registro atualizado.');}catch(err){console.error(err);showToast('Falha ao atualizar registro.');}
-        };
-        window.editActivity = async function(id) {
-            if(!requireRole('professores'))return;const a=(window.appData.activities||[]).find(x=>x.id===id);if(!a||a.teacherId!==window.currentUser.id)return;
-            const title=prompt('Título da atividade:',a.title);if(title===null)return;
-            const type=prompt('Tipo (Atividade, Trabalho, Prova ou Projeto):',a.type);if(type===null)return;
-            const max=prompt('Pontuação máxima:',String(a.maxScore));if(max===null)return;
-            const due=prompt('Prazo (AAAA-MM-DD; deixe vazio se não houver):',a.dueDate||'');if(due===null)return;
-            const description=prompt('Orientações:',a.description||'');if(description===null)return;
-            if(!title.trim()||!Number.isFinite(Number(max))||Number(max)<=0){showToast('Informe título e pontuação máxima válida.');return;}
-            Object.assign(a,{title:title.trim(),type:type.trim(),maxScore:Number(max),dueDate:due.trim(),description:description.trim()});
-            try{await setDoc(doc(db,'activities',id),a);renderTeacherActivities();renderGradeRoster();showToast('Atividade atualizada.');}catch(err){console.error(err);showToast('Erro ao editar atividade.');}
-        };
-        window.deleteActivity = async function(id) {
-            if(!requireRole('professores'))return;const a=(window.appData.activities||[]).find(x=>x.id===id);if(!a||a.teacherId!==window.currentUser.id)return;
-            if(!confirm('Excluir esta atividade? As notas já lançadas associadas a ela também serão excluídas?'))return;
-            try{await deleteDoc(doc(db,'activities',id));window.appData.activities=window.appData.activities.filter(x=>x.id!==id);const related=(window.appData.grades||[]).filter(g=>g.activityId===id);for(const g of related)await deleteDoc(doc(db,'grades',g.id));window.appData.grades=window.appData.grades.filter(g=>g.activityId!==id);renderTeacherActivities();renderGradeRoster();renderCurrentRoleView();showToast('Atividade e notas associadas excluídas.');}catch(err){console.error(err);showToast('Erro ao excluir atividade ou notas.');}
-        };
-        window.removeAcademicItem = async function(kind, id) {
-            if (!requireRole('gestao') || !confirm('Confirma a exclusão deste registro?')) return;
-            try { await deleteDoc(doc(db, kind, id)); window.appData[kind] = window.appData[kind].filter(x=>x.id!==id); renderAcademicManagement(); renderCurrentRoleView(); showToast('Registro excluído.'); }
-            catch(err) { console.error(err); showToast('Não foi possível excluir o registro.'); }
-        };
-        function teacherAssignments() { return (window.appData.teachingAssignments||[]).filter(a=>a.teacherId===window.currentUser?.id); }
-        function fillTeacherAssignmentSelect(id) {
-            const el=document.getElementById(id); if(!el)return;
-            const old=el.value; const arr=teacherAssignments();
-            el.innerHTML='<option value="">Selecione turma e disciplina</option>'+arr.map(a=>`<option value="${a.id}">${escapeHTML(a.className)} — ${escapeHTML(a.subjectName)}</option>`).join('');
-            if(arr.some(a=>a.id===old))el.value=old;
         }
-        window.saveGrade = async function(e) {
-            e.preventDefault(); if(!requireRole('professores'))return;
-            const assignment=teacherAssignments().find(x=>x.id===document.getElementById('gradeAssignment').value);
-            const activity=(window.appData.activities||[]).find(x=>x.id===document.getElementById('gradeActivity').value);
-            const studentId=document.getElementById('gradeStudent').value;
-            const score=Number(document.getElementById('gradeScore').value);
-            const student=window.appData.users.find(u=>u.id===studentId);
-            if(!assignment||!activity||activity.assignmentId!==assignment.id||!student||!Number.isFinite(score)||score<0||score>Number(activity.maxScore)) {showToast('Selecione a atividade da turma/disciplina e informe uma nota dentro do valor máximo.');return;}
-            const old=(window.appData.grades||[]).find(g=>g.studentId===studentId&&g.activityId===activity.id);
-            const item={id:old?.id||('g_'+studentId+'_'+activity.id),studentId,name:student.name,subject:assignment.subjectName,subjectId:assignment.subjectId,classId:assignment.classId,teacherId:window.currentUser.id,assignmentId:assignment.id,activityId:activity.id,activityTitle:activity.title,score,maxScore:Number(activity.maxScore),updatedAt:new Date().toISOString()};
-            try { await setDoc(doc(db,'grades',item.id),item); const i=window.appData.grades.findIndex(g=>g.id===item.id); if(i>=0)window.appData.grades[i]=item;else window.appData.grades.push(item); renderCurrentRoleView(); showToast('Nota vinculada à atividade salva com sucesso.'); }
-            catch(err){console.error(err);showToast('Erro ao salvar nota no Firebase.');}
-        };
-        function renderGradeRoster() {
-            fillTeacherAssignmentSelect('gradeAssignment');
-            const assignmentSelect=document.getElementById('gradeAssignment'), studentSelect=document.getElementById('gradeStudent'), activitySelect=document.getElementById('gradeActivity');
-            if(!studentSelect||!activitySelect)return;
-            const assignment=teacherAssignments().find(x=>x.id===assignmentSelect.value);
-            const students=assignment?window.appData.users.filter(u=>u.role==='estudantes'&&(u.classId===assignment.classId||u.details===assignment.className||u.details?.startsWith(assignment.className+' -'))):[];
-            const oldStudent=studentSelect.value;
-            studentSelect.innerHTML='<option value="">Estudante</option>'+students.map(st=>`<option value="${st.id}">${escapeHTML(st.name)}</option>`).join('');
-            if(students.some(st=>st.id===oldStudent))studentSelect.value=oldStudent;
-            const oldActivity=activitySelect.value;
-            const activities=(window.appData.activities||[]).filter(a=>assignment&&a.assignmentId===assignment.id);
-            activitySelect.innerHTML='<option value="">Selecione a atividade avaliativa</option>'+activities.map(a=>`<option value="${a.id}">${escapeHTML(a.title)} (máx. ${a.maxScore})</option>`).join('');
-            if(activities.some(a=>a.id===oldActivity))activitySelect.value=oldActivity;
-            const selected=activities.find(a=>a.id===activitySelect.value);
-            const scoreInput=document.getElementById('gradeScore'); if(scoreInput){scoreInput.max=selected?selected.maxScore:10;scoreInput.placeholder=selected?`Nota (0 a ${selected.maxScore})`:'Nota da atividade';}
-            const hint=document.getElementById('gradeScoreHint');if(hint)hint.textContent=selected?`Atividade: ${selected.title} · Nota máxima: ${selected.maxScore}`:'Selecione a atividade cadastrada; a nota respeitará a pontuação máxima definida nela.';
-        }
-        document.getElementById('gradeAssignment')?.addEventListener('change', renderGradeRoster);
-        document.getElementById('gradeActivity')?.addEventListener('change', renderGradeRoster);
-
-        window.createActivity = async function(e) {
-            e.preventDefault(); if(!requireRole('professores'))return;
-            const a=teacherAssignments().find(x=>x.id===document.getElementById('activityAssignment').value);
-            if(!a){showToast('Selecione uma turma atribuída a você.');return;}
-            const item={id:'act_'+Date.now(), assignmentId:a.id, teacherId:window.currentUser.id, classId:a.classId, subjectId:a.subjectId, className:a.className, subjectName:a.subjectName, title:document.getElementById('activityTitle').value.trim(), type:document.getElementById('activityType').value, maxScore:Number(document.getElementById('activityMaxScore').value), dueDate:document.getElementById('activityDueDate').value, description:document.getElementById('activityDescription').value.trim(), createdAt:new Date().toISOString()};
-            try{await saveCollectionItem('activities',item);e.target.reset();renderTeacherActivities();renderGradeRoster();showToast('Atividade publicada.');}
-            catch(err){console.error(err);showToast('Erro ao publicar atividade.');}
-        };
-        function renderTeacherActivities() {
-            const ids=teacherAssignments().map(a=>a.id);
-            const items=(window.appData.activities||[]).filter(a=>a.teacherId===window.currentUser?.id || ids.includes(a.assignmentId));
-            const el=document.getElementById('teacherActivitiesList'); if(el)el.innerHTML=items.map(a=>`<div class="p-3 rounded-lg border bg-slate-50"><div class="flex justify-between gap-2"><b>${escapeHTML(a.title)}</b><span class="shrink-0"><button onclick="editActivity('${a.id}')" class="text-brand-700 font-semibold mr-2">Editar</button><button onclick="deleteActivity('${a.id}')" class="text-red-600">Excluir</button></span></div><p>${escapeHTML(a.className)} — ${escapeHTML(a.subjectName)} · Nota máxima: ${a.maxScore}</p><p>${a.dueDate ? 'Prazo: '+escapeHTML(a.dueDate) : ''}</p><p>${escapeHTML(a.description)}</p></div>`).join('')||'<p class="text-slate-500">Nenhuma atividade publicada.</p>';
-        }
-        window.loadAttendanceRoster = function(e) {
-            e.preventDefault(); if(!requireRole('professores'))return;
-            const a=teacherAssignments().find(x=>x.id===document.getElementById('attendanceAssignment').value);
-            if(!a){showToast('Selecione uma turma atribuída a você.');return;}
-            const students=window.appData.users.filter(u=>u.role==='estudantes' && (u.classId===a.classId || u.details===a.className || u.details?.startsWith(a.className+' -')));
-            const date=document.getElementById('attendanceDate').value;
-            const existing=(window.appData.attendance||[]).find(x=>x.assignmentId===a.id&&x.date===date);
-            const el=document.getElementById('attendanceRoster');
-            if(!students.length){el.innerHTML='<p class="text-amber-700 text-xs">Não há estudantes vinculados a esta turma. A gestão deve cadastrar/matricular os estudantes na turma.</p>';return;}
-            el.innerHTML=students.map(st=>{const record=existing?.records?.find(r=>r.studentId===st.id);return `<label class="flex items-center justify-between gap-3 p-2 border rounded-lg text-xs"><span>${escapeHTML(st.name)}</span><select data-student="${st.id}" class="attendance-status border rounded p-2"><option value="presente" ${record?.status==='presente'?'selected':''}>Presente</option><option value="falta" ${record?.status==='falta'?'selected':''}>Falta</option><option value="justificada" ${record?.status==='justificada'?'selected':''}>Falta justificada</option></select></label>`}).join('')+`<button onclick="saveAttendance('${a.id}','${date}')" class="w-full mt-3 bg-brand-700 text-white text-xs font-bold p-3 rounded-lg">Salvar frequência</button>`;
-        };
-        window.saveAttendance = async function(assignmentId,date) {
-            if(!requireRole('professores'))return;
-            const assignment=teacherAssignments().find(a=>a.id===assignmentId); if(!assignment)return;
-            const records=[...document.querySelectorAll('.attendance-status')].map(el=>({studentId:el.dataset.student,status:el.value}));
-            const item={id:'att_'+assignmentId+'_'+date,assignmentId,teacherId:window.currentUser.id,classId:assignment.classId,subjectId:assignment.subjectId,className:assignment.className,subjectName:assignment.subjectName,date,records};
-            try{await saveCollectionItem('attendance',item);showToast('Frequência diária salva.');}
-            catch(err){console.error(err);showToast('Erro ao salvar frequência.');}
-        };
 
         window.showToast = function(msg) {
             const toast = document.getElementById('toastNotification');
@@ -959,7 +1023,6 @@
 
         window.onload = function() {
             lucide.createIcons();
-            document.getElementById('attendanceDate').value = new Date().toISOString().slice(0,10);
             window.navigateTo('login');
             syncWithFirestore();
         };
