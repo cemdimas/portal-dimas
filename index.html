@@ -223,8 +223,11 @@
                         </div>
 
                         <div id="fieldStudentClass">
-                            <label class="block text-xs font-semibold text-slate-600 mb-1">Turma</label>
-                            <input type="text" id="newUserClass" placeholder="Ex: 3º Ano A" class="w-full text-xs p-2.5 rounded-lg border border-slate-300">
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Turma do estudante</label>
+                            <select id="newUserClass" required class="w-full text-xs p-2.5 rounded-lg border border-slate-300">
+                                <option value="">Crie ou selecione uma turma</option>
+                            </select>
+                            <p class="text-[10px] text-slate-500 mt-1">A turma precisa estar cadastrada em “Turmas e disciplinas”.</p>
                         </div>
 
                         <div id="fieldParentLink" class="hidden">
@@ -284,6 +287,23 @@
                         <div><h4 class="font-semibold text-xs mb-2">Turmas cadastradas</h4><div id="classesList" class="space-y-2 text-xs"></div></div>
                         <div><h4 class="font-semibold text-xs mb-2">Disciplinas cadastradas</h4><div id="subjectsList" class="space-y-2 text-xs"></div></div>
                     </div>
+                    <section id="classStudentsPanel" class="hidden mt-5 p-4 rounded-xl border border-brand-100 bg-brand-50/50">
+                        <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-2 mb-3">
+                            <div><p class="text-[10px] uppercase tracking-wide font-bold text-brand-700">Gerenciamento da turma</p><h4 id="classStudentsTitle" class="font-bold text-base text-slate-800"></h4><p id="classStudentsSummary" class="text-xs text-slate-600 mt-1"></p></div>
+                            <button type="button" onclick="closeClassManager()" class="text-xs text-slate-500 hover:text-slate-800">Fechar painel ✕</button>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div><h5 class="font-semibold text-xs mb-2">Estudantes matriculados</h5><div id="classStudentsList" class="space-y-2"></div></div>
+                            <div>
+                                <h5 class="font-semibold text-xs mb-2">Adicionar estudante já cadastrado</h5>
+                                <form onsubmit="enrollExistingStudent(event)" class="space-y-2">
+                                    <select id="enrollStudentSelect" required class="w-full text-xs p-2.5 rounded-lg border"><option value="">Selecione um estudante</option></select>
+                                    <button class="w-full bg-brand-700 text-white text-xs font-bold p-2.5 rounded-lg">Matricular nesta turma</button>
+                                </form>
+                                <button type="button" onclick="registerStudentInSelectedClass()" class="w-full mt-3 border border-brand-300 bg-white text-brand-800 text-xs font-bold p-2.5 rounded-lg">Cadastrar novo estudante nesta turma</button>
+                            </div>
+                        </div>
+                    </section>
                 </section>
                 <section class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
                     <h3 class="font-bold text-base mb-4">Vincular professor, disciplina e turma</h3>
@@ -566,43 +586,50 @@
             document.getElementById('fieldTeacherSubject').classList.toggle('hidden', role !== 'professores');
             document.getElementById('fieldStudentClass').classList.toggle('hidden', role !== 'estudantes');
             document.getElementById('fieldParentLink').classList.toggle('hidden', role !== 'responsaveis');
+            if (role === 'estudantes') fillStudentClassSelect();
             if (role === 'responsaveis') {
                 const select = document.getElementById('newUserLinkedStudent');
                 const students = window.appData.users.filter(u => u.role === 'estudantes');
-                select.innerHTML = students.map(st => `<option value="${st.id}">${st.name}</option>`).join('');
+                select.innerHTML = '<option value="">Selecione o estudante</option>' + students.map(st => `<option value="${st.id}">${escapeHTML(st.name)}</option>`).join('');
             }
         }
 
+        function fillStudentClassSelect(preselectId = '') {
+            const select = document.getElementById('newUserClass');
+            if (!select) return;
+            const old = preselectId || select.value;
+            const classes = window.appData.classes || [];
+            select.innerHTML = '<option value="">Selecione a turma</option>' + classes.map(c => `<option value="${c.id}">${escapeHTML(c.name)}${c.shift ? ' · '+escapeHTML(c.shift) : ''}</option>`).join('');
+            if (classes.some(c => c.id === old)) select.value = old;
+        }
+
+
         window.handleCreateUser = async function(e) {
             e.preventDefault();
+            if (!requireRole('gestao')) return;
             const name = document.getElementById('newUserName').value.trim();
             const email = document.getElementById('newUserIdentifier').value.trim();
             const role = document.getElementById('newUserRole').value;
             const password = document.getElementById('newUserPassword').value.trim();
             const newUserId = 'u_' + Date.now();
-
-            let details = role === 'professores' ? document.getElementById('newUserSubject').value : role === 'estudantes' ? document.getElementById('newUserClass').value : 'Responsável';
+            let details = role === 'professores' ? document.getElementById('newUserSubject').value.trim() : role === 'estudantes' ? '' : role === 'responsaveis' ? 'Responsável' : 'Gestão';
             let linkedStudentId = role === 'responsaveis' ? document.getElementById('newUserLinkedStudent').value : null;
-
-            const newUser = { id: newUserId, name, email, role, password, details, linkedStudentId };
-            window.appData.users.push(newUser);
-
+            let classId = role === 'estudantes' ? document.getElementById('newUserClass').value : null;
+            const cls = (window.appData.classes || []).find(c => c.id === classId);
+            if (role === 'estudantes' && !cls) { showToast('Cadastre uma turma e selecione-a antes de cadastrar o estudante.'); return; }
+            if (role === 'responsaveis' && !linkedStudentId) { showToast('Selecione o estudante vinculado ao responsável.'); return; }
+            const newUser = { id: newUserId, name, email, role, password, details: role === 'estudantes' ? cls.name : details, classId: classId || null, className: cls?.name || null, linkedStudentId };
             try {
-                await setDoc(doc(db, "users", newUserId), newUser);
-                if (role === 'estudantes') {
-                    for (let sub of ["Matemática", "Física", "Química"]) {
-                        const gId = 'g_' + Math.random().toString(36).substr(2, 9);
-                        const gObj = { id: gId, studentId: newUserId, name, subject: sub, n1: 8.0, n2: 8.5 };
-                        await setDoc(doc(db, "grades", gId), gObj);
-                        window.appData.grades.push(gObj);
-                    }
-                }
-            } catch (err) { console.log(err); }
-
-            renderUsersList();
-            e.target.reset();
-            showToast("Usuário cadastrado com sucesso!");
+                await setDoc(doc(db, 'users', newUserId), newUser);
+                window.appData.users.push(newUser);
+                renderUsersList(); renderAcademicManagement(); renderCurrentRoleView();
+                e.target.reset();
+                document.getElementById('newUserRole').value = 'estudantes';
+                toggleExtraFields();
+                showToast('Usuário cadastrado com sucesso!');
+            } catch (err) { console.error(err); showToast('Não foi possível cadastrar o usuário. Verifique a conexão e as permissões do banco de dados.'); }
         }
+
 
         window.deleteUser = async function(userId) {
             if (window.currentUser && window.currentUser.id === userId) {
@@ -735,13 +762,63 @@
         };
         function renderAcademicManagement() {
             const classes = window.appData.classes || [], subjects = window.appData.subjects || [];
-            document.getElementById('classesList').innerHTML = classes.map(x => `<div class="p-2 rounded bg-slate-50 border flex justify-between gap-2"><span>${escapeHTML(x.name)} ${x.shift ? '· '+escapeHTML(x.shift) : ''}</span><button onclick="editAcademicItem('classes','${x.id}')" class="text-brand-700 font-semibold">Editar</button><button onclick="removeAcademicItem('classes','${x.id}')" class="text-red-600">Excluir</button></div>`).join('') || '<p class="text-slate-500">Nenhuma turma cadastrada.</p>';
+            document.getElementById('classesList').innerHTML = classes.map(x => { const count=window.appData.users.filter(u=>u.role==='estudantes'&&(u.classId===x.id||(!u.classId&&u.details===x.name))).length; return `<div class="p-3 rounded-lg bg-slate-50 border space-y-2"><div class="flex items-start justify-between gap-2"><div><p class="font-bold text-slate-800">${escapeHTML(x.name)}</p><p class="text-[10px] text-slate-500">${x.shift ? escapeHTML(x.shift)+' · ' : ''}${count} estudante(s)</p></div><button onclick="manageClass('${x.id}')" class="bg-brand-700 text-white rounded-lg px-2.5 py-1.5 font-bold">Abrir turma</button></div><div class="flex gap-3"><button onclick="editAcademicItem('classes','${x.id}')" class="text-brand-700 font-semibold">Editar</button><button onclick="removeAcademicItem('classes','${x.id}')" class="text-red-600">Excluir</button></div></div>`; }).join('') || '<p class="text-slate-500">Nenhuma turma cadastrada.</p>';
             document.getElementById('subjectsList').innerHTML = subjects.map(x => `<div class="p-2 rounded bg-slate-50 border flex justify-between gap-2"><span>${escapeHTML(x.name)}</span><button onclick="editAcademicItem('subjects','${x.id}')" class="text-brand-700 font-semibold">Editar</button><button onclick="removeAcademicItem('subjects','${x.id}')" class="text-red-600">Excluir</button></div>`).join('') || '<p class="text-slate-500">Nenhuma disciplina cadastrada.</p>';
             const fill = (id, items, label) => { const el=document.getElementById(id); if(!el)return; const old=el.value; el.innerHTML=`<option value="">${label}</option>`+items.map(x=>`<option value="${x.id}">${escapeHTML(x.name)}</option>`).join(''); if(items.some(x=>x.id===old))el.value=old; };
             fill('assignTeacher', window.appData.users.filter(u=>u.role==='professores'), 'Selecione o professor');
             fill('assignSubject', subjects, 'Selecione a disciplina'); fill('assignClass', classes, 'Selecione a turma');
+            fillStudentClassSelect();
             document.getElementById('teachingAssignmentsList').innerHTML = (window.appData.teachingAssignments||[]).map(a=>`<div class="p-2 rounded bg-slate-50 border flex flex-wrap items-center gap-2"><b>${escapeHTML(a.teacherName)}</b> · ${escapeHTML(a.subjectName)} · ${escapeHTML(a.className)} <button onclick="editAcademicItem('teachingAssignments','${a.id}')" class="text-brand-700 font-semibold ml-auto">Editar</button><button onclick="removeAcademicItem('teachingAssignments','${a.id}')" class="text-red-600">Excluir</button></div>`).join('') || '<p class="text-slate-500">Nenhum vínculo cadastrado.</p>';
         }
+        let selectedManagedClassId = null;
+        window.manageClass = function(classId) {
+            if (!requireRole('gestao')) return;
+            const cls = (window.appData.classes || []).find(c => c.id === classId);
+            if (!cls) return;
+            selectedManagedClassId = classId;
+            const panel = document.getElementById('classStudentsPanel');
+            panel.classList.remove('hidden');
+            document.getElementById('classStudentsTitle').textContent = cls.name;
+            const enrolled = window.appData.users.filter(u => u.role === 'estudantes' && (u.classId === classId || (!u.classId && u.details === cls.name)));
+            document.getElementById('classStudentsSummary').textContent = `${enrolled.length} estudante(s) matriculado(s)${cls.shift ? ' · Turno '+cls.shift : ''}`;
+            document.getElementById('classStudentsList').innerHTML = enrolled.map(st => `<div class="flex items-center justify-between gap-2 p-2 bg-white border rounded-lg"><div><p class="font-semibold text-xs">${escapeHTML(st.name)}</p><p class="text-[10px] text-slate-500">${escapeHTML(st.email || 'Sem e-mail')}</p></div><button type="button" onclick="removeStudentFromClass('${st.id}')" class="text-red-600 text-[10px] font-semibold">Desvincular</button></div>`).join('') || '<p class="text-xs text-slate-500 p-2 bg-white border rounded-lg">Nenhum estudante matriculado nesta turma.</p>';
+            const available = window.appData.users.filter(u => u.role === 'estudantes' && u.classId !== classId && !( !u.classId && u.details === cls.name));
+            const select = document.getElementById('enrollStudentSelect');
+            select.innerHTML = '<option value="">Selecione um estudante</option>' + available.map(st => `<option value="${st.id}">${escapeHTML(st.name)}${st.className || st.details ? ' · atual: '+escapeHTML(st.className || st.details) : ' · sem turma'}</option>`).join('');
+            if (!available.length) select.innerHTML = '<option value="">Todos os estudantes já estão nesta turma ou não há estudantes cadastrados</option>';
+            fillStudentClassSelect(classId);
+            panel.scrollIntoView({behavior:'smooth', block:'nearest'});
+        };
+        window.closeClassManager = function() { document.getElementById('classStudentsPanel').classList.add('hidden'); selectedManagedClassId = null; };
+        window.enrollExistingStudent = async function(e) {
+            e.preventDefault(); if (!requireRole('gestao') || !selectedManagedClassId) return;
+            const studentId = document.getElementById('enrollStudentSelect').value;
+            const student = window.appData.users.find(u => u.id === studentId);
+            const cls = window.appData.classes.find(c => c.id === selectedManagedClassId);
+            if (!student || !cls) { showToast('Selecione um estudante válido.'); return; }
+            if (student.classId && student.classId !== cls.id && !confirm(`Este estudante está vinculado à turma ${student.className || student.details}. Deseja transferi-lo para ${cls.name}?`)) return;
+            Object.assign(student, {classId:cls.id, className:cls.name, details:cls.name});
+            try { await setDoc(doc(db,'users',student.id),student); renderUsersList(); renderAcademicManagement(); manageClass(cls.id); renderCurrentRoleView(); showToast('Estudante matriculado na turma.'); }
+            catch(err) { console.error(err); showToast('Falha ao matricular estudante.'); }
+        };
+        window.removeStudentFromClass = async function(studentId) {
+            if (!requireRole('gestao') || !selectedManagedClassId) return;
+            const student = window.appData.users.find(u => u.id === studentId);
+            if (!student || !confirm(`Desvincular ${student.name} desta turma? O cadastro do usuário será mantido.`)) return;
+            Object.assign(student,{classId:null,className:null,details:''});
+            try { await setDoc(doc(db,'users',student.id),student); renderUsersList(); renderAcademicManagement(); manageClass(selectedManagedClassId); renderCurrentRoleView(); showToast('Estudante desvinculado. O usuário foi mantido.'); }
+            catch(err) { console.error(err); showToast('Falha ao desvincular estudante.'); }
+        };
+        window.registerStudentInSelectedClass = function() {
+            if (!selectedManagedClassId) return;
+            document.getElementById('newUserRole').value = 'estudantes';
+            toggleExtraFields();
+            fillStudentClassSelect(selectedManagedClassId);
+            document.getElementById('newUserName').focus();
+            document.getElementById('newUserName').scrollIntoView({behavior:'smooth',block:'center'});
+            showToast('Preencha nome, e-mail e senha no formulário; a turma já foi selecionada.');
+        };
+
         window.editUser = async function(id) {
             if(!requireRole('gestao'))return;const user=window.appData.users.find(u=>u.id===id);if(!user)return;
             const name=prompt('Nome completo:',user.name);if(name===null)return;
